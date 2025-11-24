@@ -19,6 +19,10 @@ class Lexer:
         'WHILE',
         'FOR',
         'INT',
+        'STRING',
+        'double',
+        'bool',
+        'null'
     ]
 
     reserved = {
@@ -27,7 +31,11 @@ class Lexer:
         'elseif': 'ELSEIF',
         'while': 'WHILE',
         'for': 'FOR',
-        'int': 'INT'
+        'int': 'INT',
+        'str': 'STRING',
+        'double': 'DOUBLE',
+        'bool': 'BOOL',
+        'null': 'NULL'
     }
 
     # regular expression rules for simple token
@@ -44,14 +52,29 @@ class Lexer:
     t_WHILE = r'while'
     t_FOR = r'for'
     t_INT = r'int'
+    t_DOUBLE = r'double'
+    t_BOOL = r'bool'
+    t_NULL = r'null'
     t_ignore_COMMENT = r'\#.*'
     # t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
     # a string conataining ignore characters (spaces and tabs)
-    t_ignore = ' \t'
+    t_ignore = ' \t\r\n'
 
     def __init__(self):
-        self.lexer = lex.lex(module=self, optimize=1)
+        self.lexer = lex.lex(module=self)
+
+    # a regular expression rule with some action
+    def t_NUMBER(self, t):
+        r'\d+'
+        t.value = int(t.value)
+        return t
+
+    # string
+    def t_STRING(self, t):
+        r'\"([^\\\"]|\\.)*\"'
+        t.value = t.value[1:-1]
+        return t
 
     def t_ID(self, t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -62,12 +85,6 @@ class Lexer:
     def tokenize(self, text):
         self.lexer.input(text)
         return list(self.lexer)
-
-    # a regular expression rule with some action
-    def t_NUMBER(self, t):
-        r'\d+'
-        t.value = int(t.value)
-        return t
     
     def t_lbrace(self, t):
         r'\{'
@@ -84,11 +101,11 @@ class Lexer:
         r'\n+'
         t.lexer.lineno += len(t.value)
 
-    def t_COMMENT(self, t):
-        r'#.*'
-        pass
+    # def t_COMMENT(self, t):
+    #     r'#.*'
+    #     pass
 
     # error handling
     def t_error(self, t):
-        print('Illegal character %s' % repr(t.value[0]), 'at line', t.lexer.lineno)
+        print('Illegal character %s' % repr(t.value[0]), 'at line[', t.lexer.lineno, ']')
         t.lexer.skip(1)

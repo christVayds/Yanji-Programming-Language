@@ -8,6 +8,13 @@ class Number(ASTnode):
 
     def __repr__(self):
         return f"Number({self.value})"
+    
+class String(ASTnode):
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return f"String({self.value})"
 
 class Identifier(ASTnode):
     def __init__(self, name):

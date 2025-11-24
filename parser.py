@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from lexer import Lexer
-from ast import Number, Identifier, BinaryOp, Assign, Program
+from ast import Number, Identifier, BinaryOp, Assign, Program, String
 
 class Parser:
 
@@ -39,6 +39,10 @@ class Parser:
         """expression : expression DIVIDE expression
             | expression TIMES expression"""
         p[0] = BinaryOp(p[2], p[1], p[3])
+
+    def p_expression_string(self, p):
+        "expression : STRING"
+        p[0] = String(p[1])
 
     # with parenthesis
     def p_expression_group(self, p):

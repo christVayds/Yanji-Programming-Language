@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEDIVIDE ELSE ELSEIF EQUAL FOR ID IF INT LPAREN MINUS NUMBER PLUS RPAREN TIMES WHILEprogram : program statementprogram : statementstatement : ID EQUAL expressionexpression : expression PLUS expression \n| expression MINUS expressionexpression : expression DIVIDE expression\n| expression TIMES expressionexpression : LPAREN expression RPARENexpression : NUMBERexpression : IDtype : INTstatement : type ID EQUAL expressionstatement : type ID'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEDIVIDE ELSE ELSEIF EQUAL FOR ID IF INT LPAREN MINUS NUMBER PLUS RPAREN STRING TIMES WHILEprogram : program statementprogram : statementstatement : ID EQUAL expressionexpression : expression PLUS expression \n| expression MINUS expressionexpression : expression DIVIDE expression\n| expression TIMES expressionexpression : STRINGexpression : LPAREN expression RPARENexpression : NUMBERexpression : IDtype : INTstatement : type ID EQUAL expressionstatement : type ID'
     
-_lr_action_items = {'ID':([0,1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,],[3,3,-2,8,-11,-1,9,-13,-10,-3,9,-9,9,9,9,9,9,-12,-4,-5,-6,-7,-8,]),'INT':([0,1,2,6,8,9,10,12,19,20,21,22,23,24,],[5,5,-2,-1,-13,-10,-3,-9,-12,-4,-5,-6,-7,-8,]),'$end':([1,2,6,8,9,10,12,19,20,21,22,23,24,],[0,-2,-1,-13,-10,-3,-9,-12,-4,-5,-6,-7,-8,]),'EQUAL':([3,8,],[7,13,]),'LPAREN':([7,11,13,14,15,16,17,],[11,11,11,11,11,11,11,]),'NUMBER':([7,11,13,14,15,16,17,],[12,12,12,12,12,12,12,]),'PLUS':([9,10,12,18,19,20,21,22,23,24,],[-10,14,-9,14,14,-4,-5,-6,-7,-8,]),'MINUS':([9,10,12,18,19,20,21,22,23,24,],[-10,15,-9,15,15,-4,-5,-6,-7,-8,]),'DIVIDE':([9,10,12,18,19,20,21,22,23,24,],[-10,16,-9,16,16,16,16,-6,-7,-8,]),'TIMES':([9,10,12,18,19,20,21,22,23,24,],[-10,17,-9,17,17,17,17,-6,-7,-8,]),'RPAREN':([9,12,18,20,21,22,23,24,],[-10,-9,24,-4,-5,-6,-7,-8,]),}
+_lr_action_items = {'ID':([0,1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,],[3,3,-2,8,-12,-1,9,-14,-11,-3,-8,9,-10,9,9,9,9,9,-13,-4,-5,-6,-7,-9,]),'INT':([0,1,2,6,8,9,10,11,13,20,21,22,23,24,25,],[5,5,-2,-1,-14,-11,-3,-8,-10,-13,-4,-5,-6,-7,-9,]),'$end':([1,2,6,8,9,10,11,13,20,21,22,23,24,25,],[0,-2,-1,-14,-11,-3,-8,-10,-13,-4,-5,-6,-7,-9,]),'EQUAL':([3,8,],[7,14,]),'STRING':([7,12,14,15,16,17,18,],[11,11,11,11,11,11,11,]),'LPAREN':([7,12,14,15,16,17,18,],[12,12,12,12,12,12,12,]),'NUMBER':([7,12,14,15,16,17,18,],[13,13,13,13,13,13,13,]),'PLUS':([9,10,11,13,19,20,21,22,23,24,25,],[-11,15,-8,-10,15,15,-4,-5,-6,-7,-9,]),'MINUS':([9,10,11,13,19,20,21,22,23,24,25,],[-11,16,-8,-10,16,16,-4,-5,-6,-7,-9,]),'DIVIDE':([9,10,11,13,19,20,21,22,23,24,25,],[-11,17,-8,-10,17,17,17,17,-6,-7,-9,]),'TIMES':([9,10,11,13,19,20,21,22,23,24,25,],[-11,18,-8,-10,18,18,18,18,-6,-7,-9,]),'RPAREN':([9,11,13,19,21,22,23,24,25,],[-11,-8,-10,25,-4,-5,-6,-7,-9,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statement':([0,1,],[2,6,]),'type':([0,1,],[4,4,]),'expression':([7,11,13,14,15,16,17,],[10,18,19,20,21,22,23,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statement':([0,1,],[2,6,]),'type':([0,1,],[4,4,]),'expression':([7,12,14,15,16,17,18,],[10,19,20,21,22,23,24,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -34,10 +34,11 @@ _lr_productions = [
   ('expression -> expression MINUS expression','expression',3,'p_expression_binop','parser.py',35),
   ('expression -> expression DIVIDE expression','expression',3,'p_expression_muldiv','parser.py',39),
   ('expression -> expression TIMES expression','expression',3,'p_expression_muldiv','parser.py',40),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',45),
-  ('expression -> NUMBER','expression',1,'p_expression_number','parser.py',50),
-  ('expression -> ID','expression',1,'p_expression_id','parser.py',55),
-  ('type -> INT','type',1,'p_type','parser.py',60),
-  ('statement -> type ID EQUAL expression','statement',4,'p_declaration','parser.py',65),
-  ('statement -> type ID','statement',2,'p_declaration_no_assign','parser.py',70),
+  ('expression -> STRING','expression',1,'p_expression_string','parser.py',44),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',49),
+  ('expression -> NUMBER','expression',1,'p_expression_number','parser.py',54),
+  ('expression -> ID','expression',1,'p_expression_id','parser.py',59),
+  ('type -> INT','type',1,'p_type','parser.py',64),
+  ('statement -> type ID EQUAL expression','statement',4,'p_declaration','parser.py',69),
+  ('statement -> type ID','statement',2,'p_declaration_no_assign','parser.py',74),
 ]

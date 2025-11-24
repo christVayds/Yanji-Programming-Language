@@ -1,0 +1,42 @@
+
+datatypes:
+    int
+    int8
+    int64
+    uint
+    uint8
+    uint64
+    double
+    udouble
+    str
+    bool
+    null
+
+int age = 20            # declared
+num = 20                # auto declaration of type
+msg = "hello world"     # string
+int8 sum;               # undeclared value
+
+# if statement
+if(age > 20){
+    age = age + 1
+} ifelse (age < 19){
+    age--
+} else {
+    age = 20
+}
+
+# for loop
+for(int i=0;i<age;i++){
+    age++
+}
+
+# while loop
+while(true){
+    # do something
+}
+
+func main(){
+    int num = 20
+    return 0;
+}
