@@ -1,0 +1,3 @@
+# this is comment
+int name = 20
+int name = name+20
