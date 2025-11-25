@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from lexer import Lexer
-from ast import Number, Identifier, BinaryOp, Assign, Program, String
+from ast import Number, Identifier, BinaryOp, Assign, Program, String, Character, Bool
 
 class Parser:
 
@@ -40,19 +40,30 @@ class Parser:
             | expression TIMES expression"""
         p[0] = BinaryOp(p[2], p[1], p[3])
 
+    # numbers
+    def p_expression_number(self, p):
+        "expression : NUMBER"
+        p[0] = Number(p[1])
+
     def p_expression_string(self, p):
         "expression : STRING"
         p[0] = String(p[1])
+
+    # characters
+    def p_expression_character(self, p):
+        "expression : CHAR"
+        p[0] = Character(p[1])
+
+    # boolean - need to fix this
+    def p_literal(self, p):
+        """literal : TRUE
+            | FALSE"""
+        p[0] = Bool(p[1])
 
     # with parenthesis
     def p_expression_group(self, p):
         """expression : LPAREN expression RPAREN"""
         p[0] = p[2]
-
-    # numbers
-    def p_expression_number(self, p):
-        "expression : NUMBER"
-        p[0] = Number(p[1])
 
     # identifiers
     def p_expression_id(self, p):
@@ -61,21 +72,25 @@ class Parser:
 
     # type
     def p_type(self, p):
-        "type : INT"
+        """type : INT 
+            | STRING 
+            | DOUBLE
+            | CHAR"""
         p[0] = p[1]
 
     # add a rule for typed variable declaration
     def p_declaration(self, p):
         "statement : type ID EQUAL expression"
-        p[0] = ('decl', 'int', p[2], p[4])
+        p[0] = Assign(p[2], p[4], p[1])
 
     # declaration without initialization
     def p_declaration_no_assign(self, p):
         "statement : type ID"
-        p[0] = ('decl', 'int', p[2], None)
+        # p[0] = ('decl', 'int', p[2], None)
+        p[0] = Assign(p[2], None, p[1])
 
     def p_error(self, p):
         if p:
-            print('Syntax Error', p)
+            print('(parser) Syntax Error', p)
         else:
-            print('Syntax Error at EOF', p)
+            print('(parser) Syntax Error at EOF', p)

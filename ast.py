@@ -15,6 +15,20 @@ class String(ASTnode):
 
     def __repr__(self):
         return f"String({self.value})"
+    
+class Character(ASTnode):
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return f"Character({self.value})"
+    
+class Bool(ASTnode):
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return f"Bool({self.value})"
 
 class Identifier(ASTnode):
     def __init__(self, name):
@@ -34,12 +48,13 @@ class BinaryOp(ASTnode):
 
 # statement nodes
 class Assign(ASTnode):
-    def __init__(self, name, value):
+    def __init__(self, name, value, _type=None):
         self.name = name
         self.value = value
+        self.type = _type
 
     def __repr__(self):
-        return f"Assign({self.name}, {self.value})"
+        return f"Assign({self.name}, {self.value}, {self.type})"
 
 class Program(ASTnode):
     def __init__(self, statement):

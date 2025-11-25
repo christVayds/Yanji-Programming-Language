@@ -20,9 +20,12 @@ class Lexer:
         'FOR',
         'INT',
         'STRING',
-        'double',
-        'bool',
-        'null'
+        'DOUBLE',
+        'BOOL',
+        'NULL',
+        'CHAR',
+        'TRUE',
+        'FALSE'
     ]
 
     reserved = {
@@ -33,9 +36,12 @@ class Lexer:
         'for': 'FOR',
         'int': 'INT',
         'str': 'STRING',
+        'char': 'CHAR',
         'double': 'DOUBLE',
         'bool': 'BOOL',
-        'null': 'NULL'
+        'null': 'NULL',
+        'true': 'TRUE',
+        'false': 'FALSE'
     }
 
     # regular expression rules for simple token
@@ -54,8 +60,10 @@ class Lexer:
     t_INT = r'int'
     t_DOUBLE = r'double'
     t_BOOL = r'bool'
+    t_TRUE = r'true'
+    t_FALSE = r'false'
     t_NULL = r'null'
-    t_ignore_COMMENT = r'\#.*'
+    t_ignore_COMMENT = r'//.*'
     # t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
     # a string conataining ignore characters (spaces and tabs)
@@ -75,11 +83,15 @@ class Lexer:
         r'\"([^\\\"]|\\.)*\"'
         t.value = t.value[1:-1]
         return t
+    
+    def t_CHAR(self, t):
+        r"'(.)'"
+        t.value = t.value[1] # extract the inner character
+        return t
 
     def t_ID(self, t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
         t.type = self.reserved.get(t.value, 'ID')
-        # t.value = (t.value, symbol_lookup(t.value))
         return t
 
     def tokenize(self, text):
@@ -100,10 +112,6 @@ class Lexer:
     def t_newline(self, t):
         r'\n+'
         t.lexer.lineno += len(t.value)
-
-    # def t_COMMENT(self, t):
-    #     r'#.*'
-    #     pass
 
     # error handling
     def t_error(self, t):

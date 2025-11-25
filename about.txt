@@ -1,4 +1,7 @@
 
+Bugs and errors:
+    1. Boolean
+
 datatypes:
     int
     int8
@@ -9,8 +12,8 @@ datatypes:
     double
     udouble
     str
+    char
     bool
-    null
 
 int age = 20            # declared
 num = 20                # auto declaration of type
