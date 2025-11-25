@@ -19,6 +19,7 @@ def main(filename: str):
 
     compiler.finish()
     print(compiler.module)
+    compiler.JITExe()
 
 if __name__=='__main__':
     try:

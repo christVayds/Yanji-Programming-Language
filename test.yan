@@ -1,2 +1,3 @@
-int age = 20
-int age2 = 30+age
+//int age = 20
+//int age2 = 30+age
+str msg = "hello world"
