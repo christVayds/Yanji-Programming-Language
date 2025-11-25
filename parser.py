@@ -17,11 +17,12 @@ class Parser:
 
     # gramar: expression : expression plus expression
     def p_program_multiple(self, p):
-        "program : program statement"
-        p[0] = Program(p[1].statments + [p[2]])
+        """program : program statement"""
+        p[0] = Program(p[1].statement + [p[2]])
 
     def p_program_single(self, p):
-        """program : statement"""
+        """program : statement
+            | empty"""
         p[0] = Program(p[1])
 
     # assignment
@@ -55,10 +56,10 @@ class Parser:
         p[0] = Character(p[1])
 
     # boolean - need to fix this
-    def p_literal(self, p):
-        """literal : TRUE
-            | FALSE"""
-        p[0] = Bool(p[1])
+    # def p_literal(self, p):
+    #     """literal : TRUE
+    #         | FALSE"""
+    #     p[0] = Bool(p[1])
 
     # with parenthesis
     def p_expression_group(self, p):
@@ -89,8 +90,13 @@ class Parser:
         # p[0] = ('decl', 'int', p[2], None)
         p[0] = Assign(p[2], None, p[1])
 
+    # empty line
+    def p_empty(self, t):
+        "empty :"
+        pass
+
     def p_error(self, p):
         if p:
             print('(parser) Syntax Error', p)
         else:
-            print('(parser) Syntax Error at EOF', p)
+            print('(parser) Syntax Error at EOF ->', p, '<-')

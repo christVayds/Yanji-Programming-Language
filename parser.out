@@ -3,11 +3,23 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     BOOL
+    DOUBLE64
+    DOUBLE8
     ELSE
     ELSEIF
+    FALSE
     FOR
     IF
+    INT64
+    INT8
     NULL
+    TRUE
+    UDOUBLE
+    UDOUBLE64
+    UDOUBLE8
+    UINT
+    UINT64
+    UINT8
     WHILE
 
 Grammar
@@ -15,58 +27,68 @@ Grammar
 Rule 0     S' -> program
 Rule 1     program -> program statement
 Rule 2     program -> statement
-Rule 3     statement -> ID EQUAL expression
-Rule 4     expression -> expression PLUS expression
-Rule 5     expression -> expression MINUS expression
-Rule 6     expression -> expression DIVIDE expression
-Rule 7     expression -> expression TIMES expression
-Rule 8     expression -> NUMBER
-Rule 9     expression -> STRING
-Rule 10    expression -> CHAR
-Rule 11    literal -> TRUE
-Rule 12    literal -> FALSE
-Rule 13    expression -> LPAREN expression RPAREN
-Rule 14    expression -> ID
-Rule 15    type -> INT
-Rule 16    type -> STRING
-Rule 17    type -> DOUBLE
-Rule 18    type -> CHAR
-Rule 19    statement -> type ID EQUAL expression
-Rule 20    statement -> type ID
+Rule 3     program -> empty
+Rule 4     statement -> ID EQUAL expression
+Rule 5     expression -> expression PLUS expression
+Rule 6     expression -> expression MINUS expression
+Rule 7     expression -> expression DIVIDE expression
+Rule 8     expression -> expression TIMES expression
+Rule 9     expression -> NUMBER
+Rule 10    expression -> STRING
+Rule 11    expression -> CHAR
+Rule 12    expression -> LPAREN expression RPAREN
+Rule 13    expression -> ID
+Rule 14    type -> INT
+Rule 15    type -> STRING
+Rule 16    type -> DOUBLE
+Rule 17    type -> CHAR
+Rule 18    statement -> type ID EQUAL expression
+Rule 19    statement -> type ID
+Rule 20    empty -> <empty>
 
 Terminals, with rules where they appear
 
 BOOL                 : 
-CHAR                 : 10 18
-DIVIDE               : 6
-DOUBLE               : 17
+CHAR                 : 11 17
+DIVIDE               : 7
+DOUBLE               : 16
+DOUBLE64             : 
+DOUBLE8              : 
 ELSE                 : 
 ELSEIF               : 
-EQUAL                : 3 19
-FALSE                : 12
+EQUAL                : 4 18
+FALSE                : 
 FOR                  : 
-ID                   : 3 14 19 20
+ID                   : 4 13 18 19
 IF                   : 
-INT                  : 15
-LPAREN               : 13
-MINUS                : 5
+INT                  : 14
+INT64                : 
+INT8                 : 
+LPAREN               : 12
+MINUS                : 6
 NULL                 : 
-NUMBER               : 8
-PLUS                 : 4
-RPAREN               : 13
-STRING               : 9 16
-TIMES                : 7
-TRUE                 : 11
+NUMBER               : 9
+PLUS                 : 5
+RPAREN               : 12
+STRING               : 10 15
+TIMES                : 8
+TRUE                 : 
+UDOUBLE              : 
+UDOUBLE64            : 
+UDOUBLE8             : 
+UINT                 : 
+UINT64               : 
+UINT8                : 
 WHILE                : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 3 4 4 5 5 6 6 7 7 13 19
-literal              : 
+empty                : 3
+expression           : 4 5 5 6 6 7 7 8 8 12 18
 program              : 1 0
 statement            : 1 2
-type                 : 19 20
+type                 : 18 19
 
 Parsing method: LALR
 
@@ -75,44 +97,59 @@ state 0
     (0) S' -> . program
     (1) program -> . program statement
     (2) program -> . statement
-    (3) statement -> . ID EQUAL expression
-    (19) statement -> . type ID EQUAL expression
-    (20) statement -> . type ID
-    (15) type -> . INT
-    (16) type -> . STRING
-    (17) type -> . DOUBLE
-    (18) type -> . CHAR
+    (3) program -> . empty
+    (4) statement -> . ID EQUAL expression
+    (18) statement -> . type ID EQUAL expression
+    (19) statement -> . type ID
+    (20) empty -> .
+    (14) type -> . INT
+    (15) type -> . STRING
+    (16) type -> . DOUBLE
+    (17) type -> . CHAR
 
-    ID              shift and go to state 3
-    INT             shift and go to state 5
-    STRING          shift and go to state 6
-    DOUBLE          shift and go to state 7
-    CHAR            shift and go to state 8
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for STRING resolved as shift
+  ! shift/reduce conflict for DOUBLE resolved as shift
+  ! shift/reduce conflict for CHAR resolved as shift
+    ID              shift and go to state 4
+    $end            reduce using rule 20 (empty -> .)
+    INT             shift and go to state 6
+    STRING          shift and go to state 7
+    DOUBLE          shift and go to state 8
+    CHAR            shift and go to state 9
+
+  ! ID              [ reduce using rule 20 (empty -> .) ]
+  ! INT             [ reduce using rule 20 (empty -> .) ]
+  ! STRING          [ reduce using rule 20 (empty -> .) ]
+  ! DOUBLE          [ reduce using rule 20 (empty -> .) ]
+  ! CHAR            [ reduce using rule 20 (empty -> .) ]
 
     program                        shift and go to state 1
     statement                      shift and go to state 2
-    type                           shift and go to state 4
+    empty                          shift and go to state 3
+    type                           shift and go to state 5
 
 state 1
 
     (0) S' -> program .
     (1) program -> program . statement
-    (3) statement -> . ID EQUAL expression
-    (19) statement -> . type ID EQUAL expression
-    (20) statement -> . type ID
-    (15) type -> . INT
-    (16) type -> . STRING
-    (17) type -> . DOUBLE
-    (18) type -> . CHAR
+    (4) statement -> . ID EQUAL expression
+    (18) statement -> . type ID EQUAL expression
+    (19) statement -> . type ID
+    (14) type -> . INT
+    (15) type -> . STRING
+    (16) type -> . DOUBLE
+    (17) type -> . CHAR
 
-    ID              shift and go to state 3
-    INT             shift and go to state 5
-    STRING          shift and go to state 6
-    DOUBLE          shift and go to state 7
-    CHAR            shift and go to state 8
+    ID              shift and go to state 4
+    INT             shift and go to state 6
+    STRING          shift and go to state 7
+    DOUBLE          shift and go to state 8
+    CHAR            shift and go to state 9
 
-    statement                      shift and go to state 9
-    type                           shift and go to state 4
+    statement                      shift and go to state 10
+    type                           shift and go to state 5
 
 state 2
 
@@ -128,48 +165,60 @@ state 2
 
 state 3
 
-    (3) statement -> ID . EQUAL expression
+    (3) program -> empty .
 
-    EQUAL           shift and go to state 10
+    ID              reduce using rule 3 (program -> empty .)
+    INT             reduce using rule 3 (program -> empty .)
+    STRING          reduce using rule 3 (program -> empty .)
+    DOUBLE          reduce using rule 3 (program -> empty .)
+    CHAR            reduce using rule 3 (program -> empty .)
+    $end            reduce using rule 3 (program -> empty .)
 
 
 state 4
 
-    (19) statement -> type . ID EQUAL expression
-    (20) statement -> type . ID
+    (4) statement -> ID . EQUAL expression
 
-    ID              shift and go to state 11
+    EQUAL           shift and go to state 11
 
 
 state 5
 
-    (15) type -> INT .
+    (18) statement -> type . ID EQUAL expression
+    (19) statement -> type . ID
 
-    ID              reduce using rule 15 (type -> INT .)
+    ID              shift and go to state 12
 
 
 state 6
 
-    (16) type -> STRING .
+    (14) type -> INT .
 
-    ID              reduce using rule 16 (type -> STRING .)
+    ID              reduce using rule 14 (type -> INT .)
 
 
 state 7
 
-    (17) type -> DOUBLE .
+    (15) type -> STRING .
 
-    ID              reduce using rule 17 (type -> DOUBLE .)
+    ID              reduce using rule 15 (type -> STRING .)
 
 
 state 8
 
-    (18) type -> CHAR .
+    (16) type -> DOUBLE .
 
-    ID              reduce using rule 18 (type -> CHAR .)
+    ID              reduce using rule 16 (type -> DOUBLE .)
 
 
 state 9
+
+    (17) type -> CHAR .
+
+    ID              reduce using rule 17 (type -> CHAR .)
+
+
+state 10
 
     (1) program -> program statement .
 
@@ -181,407 +230,415 @@ state 9
     $end            reduce using rule 1 (program -> program statement .)
 
 
-state 10
-
-    (3) statement -> ID EQUAL . expression
-    (4) expression -> . expression PLUS expression
-    (5) expression -> . expression MINUS expression
-    (6) expression -> . expression DIVIDE expression
-    (7) expression -> . expression TIMES expression
-    (8) expression -> . NUMBER
-    (9) expression -> . STRING
-    (10) expression -> . CHAR
-    (13) expression -> . LPAREN expression RPAREN
-    (14) expression -> . ID
-
-    NUMBER          shift and go to state 14
-    STRING          shift and go to state 15
-    CHAR            shift and go to state 16
-    LPAREN          shift and go to state 17
-    ID              shift and go to state 12
-
-    expression                     shift and go to state 13
-
 state 11
 
-    (19) statement -> type ID . EQUAL expression
-    (20) statement -> type ID .
+    (4) statement -> ID EQUAL . expression
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . STRING
+    (11) expression -> . CHAR
+    (12) expression -> . LPAREN expression RPAREN
+    (13) expression -> . ID
 
-    EQUAL           shift and go to state 18
-    ID              reduce using rule 20 (statement -> type ID .)
-    INT             reduce using rule 20 (statement -> type ID .)
-    STRING          reduce using rule 20 (statement -> type ID .)
-    DOUBLE          reduce using rule 20 (statement -> type ID .)
-    CHAR            reduce using rule 20 (statement -> type ID .)
-    $end            reduce using rule 20 (statement -> type ID .)
+    NUMBER          shift and go to state 15
+    STRING          shift and go to state 16
+    CHAR            shift and go to state 17
+    LPAREN          shift and go to state 18
+    ID              shift and go to state 13
 
+    expression                     shift and go to state 14
 
 state 12
 
-    (14) expression -> ID .
+    (18) statement -> type ID . EQUAL expression
+    (19) statement -> type ID .
 
-    PLUS            reduce using rule 14 (expression -> ID .)
-    MINUS           reduce using rule 14 (expression -> ID .)
-    DIVIDE          reduce using rule 14 (expression -> ID .)
-    TIMES           reduce using rule 14 (expression -> ID .)
-    ID              reduce using rule 14 (expression -> ID .)
-    INT             reduce using rule 14 (expression -> ID .)
-    STRING          reduce using rule 14 (expression -> ID .)
-    DOUBLE          reduce using rule 14 (expression -> ID .)
-    CHAR            reduce using rule 14 (expression -> ID .)
-    $end            reduce using rule 14 (expression -> ID .)
-    RPAREN          reduce using rule 14 (expression -> ID .)
+    EQUAL           shift and go to state 19
+    ID              reduce using rule 19 (statement -> type ID .)
+    INT             reduce using rule 19 (statement -> type ID .)
+    STRING          reduce using rule 19 (statement -> type ID .)
+    DOUBLE          reduce using rule 19 (statement -> type ID .)
+    CHAR            reduce using rule 19 (statement -> type ID .)
+    $end            reduce using rule 19 (statement -> type ID .)
 
 
 state 13
 
-    (3) statement -> ID EQUAL expression .
-    (4) expression -> expression . PLUS expression
-    (5) expression -> expression . MINUS expression
-    (6) expression -> expression . DIVIDE expression
-    (7) expression -> expression . TIMES expression
+    (13) expression -> ID .
 
-    ID              reduce using rule 3 (statement -> ID EQUAL expression .)
-    INT             reduce using rule 3 (statement -> ID EQUAL expression .)
-    STRING          reduce using rule 3 (statement -> ID EQUAL expression .)
-    DOUBLE          reduce using rule 3 (statement -> ID EQUAL expression .)
-    CHAR            reduce using rule 3 (statement -> ID EQUAL expression .)
-    $end            reduce using rule 3 (statement -> ID EQUAL expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    DIVIDE          shift and go to state 21
-    TIMES           shift and go to state 22
+    PLUS            reduce using rule 13 (expression -> ID .)
+    MINUS           reduce using rule 13 (expression -> ID .)
+    DIVIDE          reduce using rule 13 (expression -> ID .)
+    TIMES           reduce using rule 13 (expression -> ID .)
+    ID              reduce using rule 13 (expression -> ID .)
+    INT             reduce using rule 13 (expression -> ID .)
+    STRING          reduce using rule 13 (expression -> ID .)
+    DOUBLE          reduce using rule 13 (expression -> ID .)
+    CHAR            reduce using rule 13 (expression -> ID .)
+    $end            reduce using rule 13 (expression -> ID .)
+    RPAREN          reduce using rule 13 (expression -> ID .)
 
 
 state 14
 
-    (8) expression -> NUMBER .
+    (4) statement -> ID EQUAL expression .
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
 
-    PLUS            reduce using rule 8 (expression -> NUMBER .)
-    MINUS           reduce using rule 8 (expression -> NUMBER .)
-    DIVIDE          reduce using rule 8 (expression -> NUMBER .)
-    TIMES           reduce using rule 8 (expression -> NUMBER .)
-    ID              reduce using rule 8 (expression -> NUMBER .)
-    INT             reduce using rule 8 (expression -> NUMBER .)
-    STRING          reduce using rule 8 (expression -> NUMBER .)
-    DOUBLE          reduce using rule 8 (expression -> NUMBER .)
-    CHAR            reduce using rule 8 (expression -> NUMBER .)
-    $end            reduce using rule 8 (expression -> NUMBER .)
-    RPAREN          reduce using rule 8 (expression -> NUMBER .)
+    ID              reduce using rule 4 (statement -> ID EQUAL expression .)
+    INT             reduce using rule 4 (statement -> ID EQUAL expression .)
+    STRING          reduce using rule 4 (statement -> ID EQUAL expression .)
+    DOUBLE          reduce using rule 4 (statement -> ID EQUAL expression .)
+    CHAR            reduce using rule 4 (statement -> ID EQUAL expression .)
+    $end            reduce using rule 4 (statement -> ID EQUAL expression .)
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
+    DIVIDE          shift and go to state 22
+    TIMES           shift and go to state 23
 
 
 state 15
 
-    (9) expression -> STRING .
+    (9) expression -> NUMBER .
 
-    PLUS            reduce using rule 9 (expression -> STRING .)
-    MINUS           reduce using rule 9 (expression -> STRING .)
-    DIVIDE          reduce using rule 9 (expression -> STRING .)
-    TIMES           reduce using rule 9 (expression -> STRING .)
-    ID              reduce using rule 9 (expression -> STRING .)
-    INT             reduce using rule 9 (expression -> STRING .)
-    STRING          reduce using rule 9 (expression -> STRING .)
-    DOUBLE          reduce using rule 9 (expression -> STRING .)
-    CHAR            reduce using rule 9 (expression -> STRING .)
-    $end            reduce using rule 9 (expression -> STRING .)
-    RPAREN          reduce using rule 9 (expression -> STRING .)
+    PLUS            reduce using rule 9 (expression -> NUMBER .)
+    MINUS           reduce using rule 9 (expression -> NUMBER .)
+    DIVIDE          reduce using rule 9 (expression -> NUMBER .)
+    TIMES           reduce using rule 9 (expression -> NUMBER .)
+    ID              reduce using rule 9 (expression -> NUMBER .)
+    INT             reduce using rule 9 (expression -> NUMBER .)
+    STRING          reduce using rule 9 (expression -> NUMBER .)
+    DOUBLE          reduce using rule 9 (expression -> NUMBER .)
+    CHAR            reduce using rule 9 (expression -> NUMBER .)
+    $end            reduce using rule 9 (expression -> NUMBER .)
+    RPAREN          reduce using rule 9 (expression -> NUMBER .)
 
 
 state 16
 
-    (10) expression -> CHAR .
+    (10) expression -> STRING .
 
-    PLUS            reduce using rule 10 (expression -> CHAR .)
-    MINUS           reduce using rule 10 (expression -> CHAR .)
-    DIVIDE          reduce using rule 10 (expression -> CHAR .)
-    TIMES           reduce using rule 10 (expression -> CHAR .)
-    ID              reduce using rule 10 (expression -> CHAR .)
-    INT             reduce using rule 10 (expression -> CHAR .)
-    STRING          reduce using rule 10 (expression -> CHAR .)
-    DOUBLE          reduce using rule 10 (expression -> CHAR .)
-    CHAR            reduce using rule 10 (expression -> CHAR .)
-    $end            reduce using rule 10 (expression -> CHAR .)
-    RPAREN          reduce using rule 10 (expression -> CHAR .)
+    PLUS            reduce using rule 10 (expression -> STRING .)
+    MINUS           reduce using rule 10 (expression -> STRING .)
+    DIVIDE          reduce using rule 10 (expression -> STRING .)
+    TIMES           reduce using rule 10 (expression -> STRING .)
+    ID              reduce using rule 10 (expression -> STRING .)
+    INT             reduce using rule 10 (expression -> STRING .)
+    STRING          reduce using rule 10 (expression -> STRING .)
+    DOUBLE          reduce using rule 10 (expression -> STRING .)
+    CHAR            reduce using rule 10 (expression -> STRING .)
+    $end            reduce using rule 10 (expression -> STRING .)
+    RPAREN          reduce using rule 10 (expression -> STRING .)
 
 
 state 17
 
-    (13) expression -> LPAREN . expression RPAREN
-    (4) expression -> . expression PLUS expression
-    (5) expression -> . expression MINUS expression
-    (6) expression -> . expression DIVIDE expression
-    (7) expression -> . expression TIMES expression
-    (8) expression -> . NUMBER
-    (9) expression -> . STRING
-    (10) expression -> . CHAR
-    (13) expression -> . LPAREN expression RPAREN
-    (14) expression -> . ID
+    (11) expression -> CHAR .
 
-    NUMBER          shift and go to state 14
-    STRING          shift and go to state 15
-    CHAR            shift and go to state 16
-    LPAREN          shift and go to state 17
-    ID              shift and go to state 12
+    PLUS            reduce using rule 11 (expression -> CHAR .)
+    MINUS           reduce using rule 11 (expression -> CHAR .)
+    DIVIDE          reduce using rule 11 (expression -> CHAR .)
+    TIMES           reduce using rule 11 (expression -> CHAR .)
+    ID              reduce using rule 11 (expression -> CHAR .)
+    INT             reduce using rule 11 (expression -> CHAR .)
+    STRING          reduce using rule 11 (expression -> CHAR .)
+    DOUBLE          reduce using rule 11 (expression -> CHAR .)
+    CHAR            reduce using rule 11 (expression -> CHAR .)
+    $end            reduce using rule 11 (expression -> CHAR .)
+    RPAREN          reduce using rule 11 (expression -> CHAR .)
 
-    expression                     shift and go to state 23
 
 state 18
 
-    (19) statement -> type ID EQUAL . expression
-    (4) expression -> . expression PLUS expression
-    (5) expression -> . expression MINUS expression
-    (6) expression -> . expression DIVIDE expression
-    (7) expression -> . expression TIMES expression
-    (8) expression -> . NUMBER
-    (9) expression -> . STRING
-    (10) expression -> . CHAR
-    (13) expression -> . LPAREN expression RPAREN
-    (14) expression -> . ID
+    (12) expression -> LPAREN . expression RPAREN
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . STRING
+    (11) expression -> . CHAR
+    (12) expression -> . LPAREN expression RPAREN
+    (13) expression -> . ID
 
-    NUMBER          shift and go to state 14
-    STRING          shift and go to state 15
-    CHAR            shift and go to state 16
-    LPAREN          shift and go to state 17
-    ID              shift and go to state 12
+    NUMBER          shift and go to state 15
+    STRING          shift and go to state 16
+    CHAR            shift and go to state 17
+    LPAREN          shift and go to state 18
+    ID              shift and go to state 13
 
     expression                     shift and go to state 24
 
 state 19
 
-    (4) expression -> expression PLUS . expression
-    (4) expression -> . expression PLUS expression
-    (5) expression -> . expression MINUS expression
-    (6) expression -> . expression DIVIDE expression
-    (7) expression -> . expression TIMES expression
-    (8) expression -> . NUMBER
-    (9) expression -> . STRING
-    (10) expression -> . CHAR
-    (13) expression -> . LPAREN expression RPAREN
-    (14) expression -> . ID
+    (18) statement -> type ID EQUAL . expression
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . STRING
+    (11) expression -> . CHAR
+    (12) expression -> . LPAREN expression RPAREN
+    (13) expression -> . ID
 
-    NUMBER          shift and go to state 14
-    STRING          shift and go to state 15
-    CHAR            shift and go to state 16
-    LPAREN          shift and go to state 17
-    ID              shift and go to state 12
+    NUMBER          shift and go to state 15
+    STRING          shift and go to state 16
+    CHAR            shift and go to state 17
+    LPAREN          shift and go to state 18
+    ID              shift and go to state 13
 
     expression                     shift and go to state 25
 
 state 20
 
-    (5) expression -> expression MINUS . expression
-    (4) expression -> . expression PLUS expression
-    (5) expression -> . expression MINUS expression
-    (6) expression -> . expression DIVIDE expression
-    (7) expression -> . expression TIMES expression
-    (8) expression -> . NUMBER
-    (9) expression -> . STRING
-    (10) expression -> . CHAR
-    (13) expression -> . LPAREN expression RPAREN
-    (14) expression -> . ID
+    (5) expression -> expression PLUS . expression
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . STRING
+    (11) expression -> . CHAR
+    (12) expression -> . LPAREN expression RPAREN
+    (13) expression -> . ID
 
-    NUMBER          shift and go to state 14
-    STRING          shift and go to state 15
-    CHAR            shift and go to state 16
-    LPAREN          shift and go to state 17
-    ID              shift and go to state 12
+    NUMBER          shift and go to state 15
+    STRING          shift and go to state 16
+    CHAR            shift and go to state 17
+    LPAREN          shift and go to state 18
+    ID              shift and go to state 13
 
     expression                     shift and go to state 26
 
 state 21
 
-    (6) expression -> expression DIVIDE . expression
-    (4) expression -> . expression PLUS expression
-    (5) expression -> . expression MINUS expression
-    (6) expression -> . expression DIVIDE expression
-    (7) expression -> . expression TIMES expression
-    (8) expression -> . NUMBER
-    (9) expression -> . STRING
-    (10) expression -> . CHAR
-    (13) expression -> . LPAREN expression RPAREN
-    (14) expression -> . ID
+    (6) expression -> expression MINUS . expression
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . STRING
+    (11) expression -> . CHAR
+    (12) expression -> . LPAREN expression RPAREN
+    (13) expression -> . ID
 
-    NUMBER          shift and go to state 14
-    STRING          shift and go to state 15
-    CHAR            shift and go to state 16
-    LPAREN          shift and go to state 17
-    ID              shift and go to state 12
+    NUMBER          shift and go to state 15
+    STRING          shift and go to state 16
+    CHAR            shift and go to state 17
+    LPAREN          shift and go to state 18
+    ID              shift and go to state 13
 
     expression                     shift and go to state 27
 
 state 22
 
-    (7) expression -> expression TIMES . expression
-    (4) expression -> . expression PLUS expression
-    (5) expression -> . expression MINUS expression
-    (6) expression -> . expression DIVIDE expression
-    (7) expression -> . expression TIMES expression
-    (8) expression -> . NUMBER
-    (9) expression -> . STRING
-    (10) expression -> . CHAR
-    (13) expression -> . LPAREN expression RPAREN
-    (14) expression -> . ID
+    (7) expression -> expression DIVIDE . expression
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . STRING
+    (11) expression -> . CHAR
+    (12) expression -> . LPAREN expression RPAREN
+    (13) expression -> . ID
 
-    NUMBER          shift and go to state 14
-    STRING          shift and go to state 15
-    CHAR            shift and go to state 16
-    LPAREN          shift and go to state 17
-    ID              shift and go to state 12
+    NUMBER          shift and go to state 15
+    STRING          shift and go to state 16
+    CHAR            shift and go to state 17
+    LPAREN          shift and go to state 18
+    ID              shift and go to state 13
 
     expression                     shift and go to state 28
 
 state 23
 
-    (13) expression -> LPAREN expression . RPAREN
-    (4) expression -> expression . PLUS expression
-    (5) expression -> expression . MINUS expression
-    (6) expression -> expression . DIVIDE expression
-    (7) expression -> expression . TIMES expression
+    (8) expression -> expression TIMES . expression
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . STRING
+    (11) expression -> . CHAR
+    (12) expression -> . LPAREN expression RPAREN
+    (13) expression -> . ID
 
-    RPAREN          shift and go to state 29
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    DIVIDE          shift and go to state 21
-    TIMES           shift and go to state 22
+    NUMBER          shift and go to state 15
+    STRING          shift and go to state 16
+    CHAR            shift and go to state 17
+    LPAREN          shift and go to state 18
+    ID              shift and go to state 13
 
+    expression                     shift and go to state 29
 
 state 24
 
-    (19) statement -> type ID EQUAL expression .
-    (4) expression -> expression . PLUS expression
-    (5) expression -> expression . MINUS expression
-    (6) expression -> expression . DIVIDE expression
-    (7) expression -> expression . TIMES expression
+    (12) expression -> LPAREN expression . RPAREN
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
 
-    ID              reduce using rule 19 (statement -> type ID EQUAL expression .)
-    INT             reduce using rule 19 (statement -> type ID EQUAL expression .)
-    STRING          reduce using rule 19 (statement -> type ID EQUAL expression .)
-    DOUBLE          reduce using rule 19 (statement -> type ID EQUAL expression .)
-    CHAR            reduce using rule 19 (statement -> type ID EQUAL expression .)
-    $end            reduce using rule 19 (statement -> type ID EQUAL expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    DIVIDE          shift and go to state 21
-    TIMES           shift and go to state 22
+    RPAREN          shift and go to state 30
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
+    DIVIDE          shift and go to state 22
+    TIMES           shift and go to state 23
 
 
 state 25
 
-    (4) expression -> expression PLUS expression .
-    (4) expression -> expression . PLUS expression
-    (5) expression -> expression . MINUS expression
-    (6) expression -> expression . DIVIDE expression
-    (7) expression -> expression . TIMES expression
+    (18) statement -> type ID EQUAL expression .
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
 
-    PLUS            reduce using rule 4 (expression -> expression PLUS expression .)
-    MINUS           reduce using rule 4 (expression -> expression PLUS expression .)
-    ID              reduce using rule 4 (expression -> expression PLUS expression .)
-    INT             reduce using rule 4 (expression -> expression PLUS expression .)
-    STRING          reduce using rule 4 (expression -> expression PLUS expression .)
-    DOUBLE          reduce using rule 4 (expression -> expression PLUS expression .)
-    CHAR            reduce using rule 4 (expression -> expression PLUS expression .)
-    $end            reduce using rule 4 (expression -> expression PLUS expression .)
-    RPAREN          reduce using rule 4 (expression -> expression PLUS expression .)
-    DIVIDE          shift and go to state 21
-    TIMES           shift and go to state 22
-
-  ! DIVIDE          [ reduce using rule 4 (expression -> expression PLUS expression .) ]
-  ! TIMES           [ reduce using rule 4 (expression -> expression PLUS expression .) ]
-  ! PLUS            [ shift and go to state 19 ]
-  ! MINUS           [ shift and go to state 20 ]
+    ID              reduce using rule 18 (statement -> type ID EQUAL expression .)
+    INT             reduce using rule 18 (statement -> type ID EQUAL expression .)
+    STRING          reduce using rule 18 (statement -> type ID EQUAL expression .)
+    DOUBLE          reduce using rule 18 (statement -> type ID EQUAL expression .)
+    CHAR            reduce using rule 18 (statement -> type ID EQUAL expression .)
+    $end            reduce using rule 18 (statement -> type ID EQUAL expression .)
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
+    DIVIDE          shift and go to state 22
+    TIMES           shift and go to state 23
 
 
 state 26
 
-    (5) expression -> expression MINUS expression .
-    (4) expression -> expression . PLUS expression
-    (5) expression -> expression . MINUS expression
-    (6) expression -> expression . DIVIDE expression
-    (7) expression -> expression . TIMES expression
+    (5) expression -> expression PLUS expression .
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
 
-    PLUS            reduce using rule 5 (expression -> expression MINUS expression .)
-    MINUS           reduce using rule 5 (expression -> expression MINUS expression .)
-    ID              reduce using rule 5 (expression -> expression MINUS expression .)
-    INT             reduce using rule 5 (expression -> expression MINUS expression .)
-    STRING          reduce using rule 5 (expression -> expression MINUS expression .)
-    DOUBLE          reduce using rule 5 (expression -> expression MINUS expression .)
-    CHAR            reduce using rule 5 (expression -> expression MINUS expression .)
-    $end            reduce using rule 5 (expression -> expression MINUS expression .)
-    RPAREN          reduce using rule 5 (expression -> expression MINUS expression .)
-    DIVIDE          shift and go to state 21
-    TIMES           shift and go to state 22
+    PLUS            reduce using rule 5 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 5 (expression -> expression PLUS expression .)
+    ID              reduce using rule 5 (expression -> expression PLUS expression .)
+    INT             reduce using rule 5 (expression -> expression PLUS expression .)
+    STRING          reduce using rule 5 (expression -> expression PLUS expression .)
+    DOUBLE          reduce using rule 5 (expression -> expression PLUS expression .)
+    CHAR            reduce using rule 5 (expression -> expression PLUS expression .)
+    $end            reduce using rule 5 (expression -> expression PLUS expression .)
+    RPAREN          reduce using rule 5 (expression -> expression PLUS expression .)
+    DIVIDE          shift and go to state 22
+    TIMES           shift and go to state 23
 
-  ! DIVIDE          [ reduce using rule 5 (expression -> expression MINUS expression .) ]
-  ! TIMES           [ reduce using rule 5 (expression -> expression MINUS expression .) ]
-  ! PLUS            [ shift and go to state 19 ]
-  ! MINUS           [ shift and go to state 20 ]
+  ! DIVIDE          [ reduce using rule 5 (expression -> expression PLUS expression .) ]
+  ! TIMES           [ reduce using rule 5 (expression -> expression PLUS expression .) ]
+  ! PLUS            [ shift and go to state 20 ]
+  ! MINUS           [ shift and go to state 21 ]
 
 
 state 27
 
-    (6) expression -> expression DIVIDE expression .
-    (4) expression -> expression . PLUS expression
-    (5) expression -> expression . MINUS expression
-    (6) expression -> expression . DIVIDE expression
-    (7) expression -> expression . TIMES expression
+    (6) expression -> expression MINUS expression .
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
 
-    PLUS            reduce using rule 6 (expression -> expression DIVIDE expression .)
-    MINUS           reduce using rule 6 (expression -> expression DIVIDE expression .)
-    DIVIDE          reduce using rule 6 (expression -> expression DIVIDE expression .)
-    TIMES           reduce using rule 6 (expression -> expression DIVIDE expression .)
-    ID              reduce using rule 6 (expression -> expression DIVIDE expression .)
-    INT             reduce using rule 6 (expression -> expression DIVIDE expression .)
-    STRING          reduce using rule 6 (expression -> expression DIVIDE expression .)
-    DOUBLE          reduce using rule 6 (expression -> expression DIVIDE expression .)
-    CHAR            reduce using rule 6 (expression -> expression DIVIDE expression .)
-    $end            reduce using rule 6 (expression -> expression DIVIDE expression .)
-    RPAREN          reduce using rule 6 (expression -> expression DIVIDE expression .)
+    PLUS            reduce using rule 6 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 6 (expression -> expression MINUS expression .)
+    ID              reduce using rule 6 (expression -> expression MINUS expression .)
+    INT             reduce using rule 6 (expression -> expression MINUS expression .)
+    STRING          reduce using rule 6 (expression -> expression MINUS expression .)
+    DOUBLE          reduce using rule 6 (expression -> expression MINUS expression .)
+    CHAR            reduce using rule 6 (expression -> expression MINUS expression .)
+    $end            reduce using rule 6 (expression -> expression MINUS expression .)
+    RPAREN          reduce using rule 6 (expression -> expression MINUS expression .)
+    DIVIDE          shift and go to state 22
+    TIMES           shift and go to state 23
 
-  ! PLUS            [ shift and go to state 19 ]
-  ! MINUS           [ shift and go to state 20 ]
-  ! DIVIDE          [ shift and go to state 21 ]
-  ! TIMES           [ shift and go to state 22 ]
+  ! DIVIDE          [ reduce using rule 6 (expression -> expression MINUS expression .) ]
+  ! TIMES           [ reduce using rule 6 (expression -> expression MINUS expression .) ]
+  ! PLUS            [ shift and go to state 20 ]
+  ! MINUS           [ shift and go to state 21 ]
 
 
 state 28
 
-    (7) expression -> expression TIMES expression .
-    (4) expression -> expression . PLUS expression
-    (5) expression -> expression . MINUS expression
-    (6) expression -> expression . DIVIDE expression
-    (7) expression -> expression . TIMES expression
+    (7) expression -> expression DIVIDE expression .
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
 
-    PLUS            reduce using rule 7 (expression -> expression TIMES expression .)
-    MINUS           reduce using rule 7 (expression -> expression TIMES expression .)
-    DIVIDE          reduce using rule 7 (expression -> expression TIMES expression .)
-    TIMES           reduce using rule 7 (expression -> expression TIMES expression .)
-    ID              reduce using rule 7 (expression -> expression TIMES expression .)
-    INT             reduce using rule 7 (expression -> expression TIMES expression .)
-    STRING          reduce using rule 7 (expression -> expression TIMES expression .)
-    DOUBLE          reduce using rule 7 (expression -> expression TIMES expression .)
-    CHAR            reduce using rule 7 (expression -> expression TIMES expression .)
-    $end            reduce using rule 7 (expression -> expression TIMES expression .)
-    RPAREN          reduce using rule 7 (expression -> expression TIMES expression .)
+    PLUS            reduce using rule 7 (expression -> expression DIVIDE expression .)
+    MINUS           reduce using rule 7 (expression -> expression DIVIDE expression .)
+    DIVIDE          reduce using rule 7 (expression -> expression DIVIDE expression .)
+    TIMES           reduce using rule 7 (expression -> expression DIVIDE expression .)
+    ID              reduce using rule 7 (expression -> expression DIVIDE expression .)
+    INT             reduce using rule 7 (expression -> expression DIVIDE expression .)
+    STRING          reduce using rule 7 (expression -> expression DIVIDE expression .)
+    DOUBLE          reduce using rule 7 (expression -> expression DIVIDE expression .)
+    CHAR            reduce using rule 7 (expression -> expression DIVIDE expression .)
+    $end            reduce using rule 7 (expression -> expression DIVIDE expression .)
+    RPAREN          reduce using rule 7 (expression -> expression DIVIDE expression .)
 
-  ! PLUS            [ shift and go to state 19 ]
-  ! MINUS           [ shift and go to state 20 ]
-  ! DIVIDE          [ shift and go to state 21 ]
-  ! TIMES           [ shift and go to state 22 ]
+  ! PLUS            [ shift and go to state 20 ]
+  ! MINUS           [ shift and go to state 21 ]
+  ! DIVIDE          [ shift and go to state 22 ]
+  ! TIMES           [ shift and go to state 23 ]
 
 
 state 29
 
-    (13) expression -> LPAREN expression RPAREN .
+    (8) expression -> expression TIMES expression .
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
 
-    PLUS            reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    MINUS           reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    TIMES           reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    ID              reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    INT             reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    STRING          reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    DOUBLE          reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    CHAR            reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    $end            reduce using rule 13 (expression -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 13 (expression -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 8 (expression -> expression TIMES expression .)
+    MINUS           reduce using rule 8 (expression -> expression TIMES expression .)
+    DIVIDE          reduce using rule 8 (expression -> expression TIMES expression .)
+    TIMES           reduce using rule 8 (expression -> expression TIMES expression .)
+    ID              reduce using rule 8 (expression -> expression TIMES expression .)
+    INT             reduce using rule 8 (expression -> expression TIMES expression .)
+    STRING          reduce using rule 8 (expression -> expression TIMES expression .)
+    DOUBLE          reduce using rule 8 (expression -> expression TIMES expression .)
+    CHAR            reduce using rule 8 (expression -> expression TIMES expression .)
+    $end            reduce using rule 8 (expression -> expression TIMES expression .)
+    RPAREN          reduce using rule 8 (expression -> expression TIMES expression .)
 
+  ! PLUS            [ shift and go to state 20 ]
+  ! MINUS           [ shift and go to state 21 ]
+  ! DIVIDE          [ shift and go to state 22 ]
+  ! TIMES           [ shift and go to state 23 ]
+
+
+state 30
+
+    (12) expression -> LPAREN expression RPAREN .
+
+    PLUS            reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    TIMES           reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    ID              reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    INT             reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    STRING          reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    DOUBLE          reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    CHAR            reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 12 (expression -> LPAREN expression RPAREN .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ID in state 0 resolved as shift
+WARNING: shift/reduce conflict for INT in state 0 resolved as shift
+WARNING: shift/reduce conflict for STRING in state 0 resolved as shift
+WARNING: shift/reduce conflict for DOUBLE in state 0 resolved as shift
+WARNING: shift/reduce conflict for CHAR in state 0 resolved as shift

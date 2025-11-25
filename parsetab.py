@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEBOOL CHAR DIVIDE DOUBLE ELSE ELSEIF EQUAL FALSE FOR ID IF INT LPAREN MINUS NULL NUMBER PLUS RPAREN STRING TIMES TRUE WHILEprogram : program statementprogram : statementstatement : ID EQUAL expressionexpression : expression PLUS expression \n| expression MINUS expressionexpression : expression DIVIDE expression\n| expression TIMES expressionexpression : NUMBERexpression : STRINGexpression : CHARliteral : TRUE\n| FALSEexpression : LPAREN expression RPARENexpression : IDtype : INT \n| STRING \n| DOUBLE\n| CHARstatement : type ID EQUAL expressionstatement : type ID'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEBOOL CHAR DIVIDE DOUBLE DOUBLE64 DOUBLE8 ELSE ELSEIF EQUAL FALSE FOR ID IF INT INT64 INT8 LPAREN MINUS NULL NUMBER PLUS RPAREN STRING TIMES TRUE UDOUBLE UDOUBLE64 UDOUBLE8 UINT UINT64 UINT8 WHILEprogram : program statementprogram : statement\n| emptystatement : ID EQUAL expressionexpression : expression PLUS expression \n| expression MINUS expressionexpression : expression DIVIDE expression\n| expression TIMES expressionexpression : NUMBERexpression : STRINGexpression : CHARexpression : LPAREN expression RPARENexpression : IDtype : INT \n| STRING \n| DOUBLE\n| CHARstatement : type ID EQUAL expressionstatement : type IDempty :'
     
-_lr_action_items = {'ID':([0,1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26,27,28,29,],[3,3,-2,11,-15,-16,-17,-18,-1,12,-20,-14,-3,-8,-9,-10,12,12,12,12,12,12,-19,-4,-5,-6,-7,-13,]),'INT':([0,1,2,9,11,12,13,14,15,16,24,25,26,27,28,29,],[5,5,-2,-1,-20,-14,-3,-8,-9,-10,-19,-4,-5,-6,-7,-13,]),'STRING':([0,1,2,9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26,27,28,29,],[6,6,-2,-1,15,-20,-14,-3,-8,-9,-10,15,15,15,15,15,15,-19,-4,-5,-6,-7,-13,]),'DOUBLE':([0,1,2,9,11,12,13,14,15,16,24,25,26,27,28,29,],[7,7,-2,-1,-20,-14,-3,-8,-9,-10,-19,-4,-5,-6,-7,-13,]),'CHAR':([0,1,2,9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26,27,28,29,],[8,8,-2,-1,16,-20,-14,-3,-8,-9,-10,16,16,16,16,16,16,-19,-4,-5,-6,-7,-13,]),'$end':([1,2,9,11,12,13,14,15,16,24,25,26,27,28,29,],[0,-2,-1,-20,-14,-3,-8,-9,-10,-19,-4,-5,-6,-7,-13,]),'EQUAL':([3,11,],[10,18,]),'NUMBER':([10,17,18,19,20,21,22,],[14,14,14,14,14,14,14,]),'LPAREN':([10,17,18,19,20,21,22,],[17,17,17,17,17,17,17,]),'PLUS':([12,13,14,15,16,23,24,25,26,27,28,29,],[-14,19,-8,-9,-10,19,19,-4,-5,-6,-7,-13,]),'MINUS':([12,13,14,15,16,23,24,25,26,27,28,29,],[-14,20,-8,-9,-10,20,20,-4,-5,-6,-7,-13,]),'DIVIDE':([12,13,14,15,16,23,24,25,26,27,28,29,],[-14,21,-8,-9,-10,21,21,21,21,-6,-7,-13,]),'TIMES':([12,13,14,15,16,23,24,25,26,27,28,29,],[-14,22,-8,-9,-10,22,22,22,22,-6,-7,-13,]),'RPAREN':([12,14,15,16,23,25,26,27,28,29,],[-14,-8,-9,-10,29,-4,-5,-6,-7,-13,]),}
+_lr_action_items = {'ID':([0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,],[4,4,-2,-3,12,-14,-15,-16,-17,-1,13,-19,-13,-4,-9,-10,-11,13,13,13,13,13,13,-18,-5,-6,-7,-8,-12,]),'INT':([0,1,2,3,10,12,13,14,15,16,17,25,26,27,28,29,30,],[6,6,-2,-3,-1,-19,-13,-4,-9,-10,-11,-18,-5,-6,-7,-8,-12,]),'STRING':([0,1,2,3,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,],[7,7,-2,-3,-1,16,-19,-13,-4,-9,-10,-11,16,16,16,16,16,16,-18,-5,-6,-7,-8,-12,]),'DOUBLE':([0,1,2,3,10,12,13,14,15,16,17,25,26,27,28,29,30,],[8,8,-2,-3,-1,-19,-13,-4,-9,-10,-11,-18,-5,-6,-7,-8,-12,]),'CHAR':([0,1,2,3,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,],[9,9,-2,-3,-1,17,-19,-13,-4,-9,-10,-11,17,17,17,17,17,17,-18,-5,-6,-7,-8,-12,]),'$end':([0,1,2,3,10,12,13,14,15,16,17,25,26,27,28,29,30,],[-20,0,-2,-3,-1,-19,-13,-4,-9,-10,-11,-18,-5,-6,-7,-8,-12,]),'EQUAL':([4,12,],[11,19,]),'NUMBER':([11,18,19,20,21,22,23,],[15,15,15,15,15,15,15,]),'LPAREN':([11,18,19,20,21,22,23,],[18,18,18,18,18,18,18,]),'PLUS':([13,14,15,16,17,24,25,26,27,28,29,30,],[-13,20,-9,-10,-11,20,20,-5,-6,-7,-8,-12,]),'MINUS':([13,14,15,16,17,24,25,26,27,28,29,30,],[-13,21,-9,-10,-11,21,21,-5,-6,-7,-8,-12,]),'DIVIDE':([13,14,15,16,17,24,25,26,27,28,29,30,],[-13,22,-9,-10,-11,22,22,22,22,-7,-8,-12,]),'TIMES':([13,14,15,16,17,24,25,26,27,28,29,30,],[-13,23,-9,-10,-11,23,23,23,23,-7,-8,-12,]),'RPAREN':([13,15,16,17,24,26,27,28,29,30,],[-13,-9,-10,-11,30,-5,-6,-7,-8,-12,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statement':([0,1,],[2,9,]),'type':([0,1,],[4,4,]),'expression':([10,17,18,19,20,21,22,],[13,23,24,25,26,27,28,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statement':([0,1,],[2,10,]),'empty':([0,],[3,]),'type':([0,1,],[5,5,]),'expression':([11,18,19,20,21,22,23,],[14,24,25,26,27,28,29,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -29,22 +29,22 @@ _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
   ('program -> program statement','program',2,'p_program_multiple','parser.py',20),
   ('program -> statement','program',1,'p_program_single','parser.py',24),
-  ('statement -> ID EQUAL expression','statement',3,'p_statement_assign','parser.py',29),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_binop','parser.py',34),
-  ('expression -> expression MINUS expression','expression',3,'p_expression_binop','parser.py',35),
-  ('expression -> expression DIVIDE expression','expression',3,'p_expression_muldiv','parser.py',39),
-  ('expression -> expression TIMES expression','expression',3,'p_expression_muldiv','parser.py',40),
-  ('expression -> NUMBER','expression',1,'p_expression_number','parser.py',45),
-  ('expression -> STRING','expression',1,'p_expression_string','parser.py',49),
-  ('expression -> CHAR','expression',1,'p_expression_character','parser.py',54),
-  ('literal -> TRUE','literal',1,'p_literal','parser.py',59),
-  ('literal -> FALSE','literal',1,'p_literal','parser.py',60),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',65),
-  ('expression -> ID','expression',1,'p_expression_id','parser.py',70),
-  ('type -> INT','type',1,'p_type','parser.py',75),
-  ('type -> STRING','type',1,'p_type','parser.py',76),
-  ('type -> DOUBLE','type',1,'p_type','parser.py',77),
-  ('type -> CHAR','type',1,'p_type','parser.py',78),
-  ('statement -> type ID EQUAL expression','statement',4,'p_declaration','parser.py',83),
-  ('statement -> type ID','statement',2,'p_declaration_no_assign','parser.py',88),
+  ('program -> empty','program',1,'p_program_single','parser.py',25),
+  ('statement -> ID EQUAL expression','statement',3,'p_statement_assign','parser.py',30),
+  ('expression -> expression PLUS expression','expression',3,'p_expression_binop','parser.py',35),
+  ('expression -> expression MINUS expression','expression',3,'p_expression_binop','parser.py',36),
+  ('expression -> expression DIVIDE expression','expression',3,'p_expression_muldiv','parser.py',40),
+  ('expression -> expression TIMES expression','expression',3,'p_expression_muldiv','parser.py',41),
+  ('expression -> NUMBER','expression',1,'p_expression_number','parser.py',46),
+  ('expression -> STRING','expression',1,'p_expression_string','parser.py',50),
+  ('expression -> CHAR','expression',1,'p_expression_character','parser.py',55),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',66),
+  ('expression -> ID','expression',1,'p_expression_id','parser.py',71),
+  ('type -> INT','type',1,'p_type','parser.py',76),
+  ('type -> STRING','type',1,'p_type','parser.py',77),
+  ('type -> DOUBLE','type',1,'p_type','parser.py',78),
+  ('type -> CHAR','type',1,'p_type','parser.py',79),
+  ('statement -> type ID EQUAL expression','statement',4,'p_declaration','parser.py',84),
+  ('statement -> type ID','statement',2,'p_declaration_no_assign','parser.py',89),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',95),
 ]

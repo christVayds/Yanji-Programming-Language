@@ -1,4 +1,7 @@
 
+Yanji Programming Language is a typed, low-level and high-level programming Language.
+Designed to be fast, modern and beginer-friendly.
+
 Bugs and errors:
     1. Boolean
 
@@ -6,11 +9,16 @@ datatypes:
     int
     int8
     int64
+
     uint
     uint8
     uint64
+
     double
     udouble
+    double64
+    udouble8
+
     str
     char
     bool
@@ -20,7 +28,35 @@ num = 20                # auto declaration of type
 msg = "hello world"     # string
 int8 sum;               # undeclared value
 
-# if statement
+# ARRAYS
+int arr[10] = {}        # array of type int
+int tups[10] = ()       # tuple of type int
+# especial array
+(str name, int age, double grade) student[10] = {
+    {"christian", 20, 80.5}
+}
+
+# STRUCT
+struct Student(
+    str name
+    int age
+    double grade
+)
+
+# create new struct
+struct student1 = new Student("christian", 20, 80.5)
+
+# access struct
+student1.name
+
+# ENUM
+enum State(
+    DAY,
+    NIGHT,
+    MIDNIGHT 
+)
+
+# IF STATEMENT
 if(age > 20){
     age = age + 1
 } ifelse (age < 19){
@@ -29,17 +65,44 @@ if(age > 20){
     age = 20
 }
 
-# for loop
+# FOR LOOPS
 for(int i=0;i<age;i++){
     age++
 }
 
-# while loop
+# FOREACH LOOPS
+foreach(int num in numbers){
+
+}
+
+# WHILE LOOPS
 while(true){
     # do something
 }
 
-func main(){
+# FUNCTION
+func int main(){
     int num = 20
     return 0;
+}
+
+func void sayHello(str msg){
+
+}
+
+# OOP
+
+-> create a struct
+struct Student (
+    str name
+    int age
+    double grade
+
+    # enum functions
+    func void Copy()
+)
+
+# function statement
+func void Student::Copy(){
+
 }

@@ -1,9 +1,11 @@
 import sys
+from lexer import Lexer
 from parser import Parser
 from compiler import Compiler
 
 def main(filename: str):
     compiler = Compiler()
+    compiler.createMain()
 
     lines = [line.strip() for line in open(filename, 'r')]
     for line in lines:
@@ -12,8 +14,11 @@ def main(filename: str):
         # print(tokenize)
         parser = Parser()
         ast = parser.parser.parse(line, lexer=parser.lexer.lexer)
+        print(ast)
         compiler.code_gen(ast)
-        # print(ast)
+
+    compiler.finish()
+    print(compiler.module)
 
 if __name__=='__main__':
     try:
