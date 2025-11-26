@@ -5,6 +5,25 @@ Designed to be fast, modern and beginer-friendly.
 Bugs and errors:
     1. Boolean
 
+TO-DOs
+    1. Exceptions and error handling
+    2. if statements
+    3. for loops 
+    4. while loops 
+    5. functions
+    6. structs
+    7. enum
+    8. logical
+    9. ==, !=, >, <, >=, <=
+    10. switch
+    11. do-while loops
+
+Scopes
+    1. local 
+    2. global
+    3. block scopes 
+    4. function scopes 
+
 datatypes:
     int
     int8
@@ -22,6 +41,11 @@ datatypes:
     str
     char
     bool
+
+    struct
+    enum
+    arrays 
+    lists
 
 int age = 20            # declared
 num = 20                # auto declaration of type

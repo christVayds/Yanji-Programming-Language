@@ -62,3 +62,10 @@ class Program(ASTnode):
 
     def __repr__(self):
         return f"Program({self.statement})"
+    
+class Write(ASTnode):
+    def __init__(self, expr):
+        self.expr = expr # string literal or expression
+
+    def __repr__(self):
+        return f"Write({self.expr})"

@@ -1,5 +1,5 @@
 from llvmlite import ir, binding
-from ast import ASTnode, Number, String, Program, Character, Identifier, BinaryOp, Assign
+from src.ast import ast
 import ctypes
 
 class Compiler:
@@ -29,32 +29,46 @@ class Compiler:
         # set datalayout
         self.module.data_layout=self.target_machine.target_data
 
+        # printf
+        printf_ty = ir.FunctionType(
+            ir.IntType(32),
+            [ir.IntType(8).as_pointer()],
+            var_arg=True
+        )
+
+        self.printf = ir.Function(self.module, printf_ty, name='printf')
+
     def createMain(self):
         func_type = ir.FunctionType(ir.VoidType(), ())
         self.func = ir.Function(self.module, func_type, name='main')
         block = self.func.append_basic_block(name='entry')
         self.builder = ir.IRBuilder(block)
 
-    def code_gen(self, node: ASTnode):
-        if isinstance(node, Program):               # program
+    def code_gen(self, node: ast.ASTnode):
+        if isinstance(node, ast.Program):               # program
             self.code_gen(node.statement)
-        elif isinstance(node, Assign):              # Assign
+        elif isinstance(node, ast.Assign):              # Assign
             return self.nodeAssign(node)
-        elif isinstance(node, Number):              # Number
+        elif isinstance(node, ast.Number):              # Number
             return self.nodeNumber(node.value)
-        elif isinstance(node, BinaryOp):            # BinaaryOp
+        elif isinstance(node, ast.BinaryOp):            # BinaaryOp
             return self.nodeBinOP(node)
-        elif isinstance(node, Identifier):          # Identifier
+        elif isinstance(node, ast.Identifier):          # Identifier
             return self.nodeID(node)
-        elif isinstance(node, Character):           # Character
+        elif isinstance(node, ast.Character):           # Character
             return self.nodeChar(node.value)
-        elif isinstance(node, String):              # String
+        elif isinstance(node, ast.String):              # String
             return self.nodeString(node)
+        elif isinstance(node, ast.Write):               # print / write
+            return self.nodeWrite(node.expr)
+        
+    def NodeValue(self, node: ast.ASTnode):
+        pass
 
     def nodeNumber(self, value: int):
         return ir.Constant(ir.IntType(32), value)
     
-    def nodeString(self, node: String):
+    def nodeString(self, node: ast.String):
         text = node.value
         name = f'str_ptr_{self.globalStrCount}'
         self.globalStrCount+=1
@@ -78,7 +92,7 @@ class Compiler:
     def nodeChar(self, value: str):
         return ir.Constant(ir.IntType(8), ord(value))
     
-    def nodeBinOP(self, node: ASTnode):
+    def nodeBinOP(self, node: ast.ASTnode):
         left = self.code_gen(node.left)
         right = self.code_gen(node.right)
         if node.op == '+':
@@ -90,7 +104,7 @@ class Compiler:
         elif node.op == '/':
             return self.sdiv(left, right)
     
-    def nodeAssign(self, node: ASTnode):
+    def nodeAssign(self, node: ast.ASTnode):
         value = self.code_gen(node.value)
 
         if node.type == 'int':
@@ -109,7 +123,7 @@ class Compiler:
             self.symbol_table[node.name] = ptr
             return ptr
     
-    def nodeID(self, node: ASTnode):
+    def nodeID(self, node: ast.ASTnode):
         ptr = self.symbol_table[node.name]
         return self.builder.load(ptr, name=node.name)
     
@@ -128,6 +142,52 @@ class Compiler:
     def udiv(self, left, right):
         return self.builder.udiv(left, right)
     
+    def create_internal_printf(self):
+        # void _internal_printf(i8*) - create new function for printing
+        func_ty = ir.FunctionType(ir.VoidType(), [ir.IntType(8).as_pointer()])
+        func = ir.Function(self.module, func_ty, name='_internal_printf')
+        block = func.append_basic_block(name='entry')
+        builder = ir.IRBuilder(block)
+
+        #load printf
+        printf = self.module.globals.get('printf')
+
+        # forward the string to printf
+        builder.call(printf, [func.args[0]])
+
+        builder.ret_void()
+        return func
+    
+    def string_Constant(self, text: str):
+        text_bytes = bytearray(text.encode('utf8') + b'\00')
+        string_ty = ir.ArrayType(ir.IntType(8), len(text_bytes))
+
+        gvar = ir.GlobalVariable(self.module, string_ty, name=f'.str{len(self.module.globals)}')
+        gvar.global_constant = True
+        gvar.initializer = ir.Constant(string_ty, text_bytes)
+
+        # return pointer to first character
+        return gvar
+    
+    def nodeWrite(self, expr):
+        # text = str(self.code_gen(expr))
+        text = expr.value
+        
+        # ensure print exist
+        if '_internal_printf' not in self.module.globals:
+            self.create_internal_printf()
+
+        internal_printf = self.module.globals['_internal_printf']
+
+        # create the global string
+        gstr = self.string_Constant(text)
+
+        # create pointer to first character
+        ptr = self.builder.gep(gstr, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), 0)])
+
+        # call the internal printf
+        self.builder.call(internal_printf, [ptr])
+    
     def finish(self):
         self.builder.ret_void()
 
@@ -135,7 +195,7 @@ class Compiler:
         with open('output.ll', 'w') as f:
             f.write(str(self.module))
 
-    def JITExe(self):
+    def JITExec(self):
         # create JIT execution engine
 
         llvm_ir = str(self.module)
@@ -153,4 +213,4 @@ class Compiler:
         cfunc = ctypes.CFUNCTYPE(None)(func_ptr) # none for void function
         cfunc() # runs the llvm main function
 
-        print("Program Executed Successfully")
+        print("\n\nProgram Executed Successfully")

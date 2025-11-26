@@ -35,7 +35,8 @@ class Lexer:
         'NULL',
         'CHAR',
         'TRUE',
-        'FALSE'
+        'FALSE',
+        'WRITE',
     ]
 
     reserved = {
@@ -61,7 +62,8 @@ class Lexer:
         'bool': 'BOOL',
         'null': 'NULL',
         'true': 'TRUE',
-        'false': 'FALSE'
+        'false': 'FALSE',
+        'write': 'WRITE',           # write or printf
     }
 
     # regular expression rules for simple token
@@ -104,6 +106,7 @@ class Lexer:
     t_FALSE = r'false'
     t_NULL = r'null'
     t_ignore_COMMENT = r'//.*'
+    t_WRITE = r'write'                  # write or printf
     # t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
     # a string conataining ignore characters (spaces and tabs)

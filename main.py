@@ -1,7 +1,7 @@
 import sys
-from lexer import Lexer
-from parser import Parser
-from compiler import Compiler
+from src.lexer.lexer import Lexer
+from src.parser.parser import Parser
+from src.compiler.compiler import Compiler
 
 def main(filename: str):
     compiler = Compiler()
@@ -18,12 +18,13 @@ def main(filename: str):
         compiler.code_gen(ast)
 
     compiler.finish()
-    print(compiler.module)
-    compiler.JITExe()
+    print(f'{compiler.module}\n\n')
+    compiler.JITExec()
 
 if __name__=='__main__':
     try:
         filename = sys.argv[1]
+        filename = f'test/{filename}'
         main(filename=filename)
     except IndexError:
         print('No file')
