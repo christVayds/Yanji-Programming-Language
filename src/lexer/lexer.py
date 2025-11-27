@@ -1,4 +1,4 @@
-import ply.lex as lex
+import ply.lex as lex # type: ignore
 
 class Lexer:
 

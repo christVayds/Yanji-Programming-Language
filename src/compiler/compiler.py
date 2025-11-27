@@ -1,4 +1,4 @@
-from llvmlite import ir, binding
+from llvmlite import ir, binding # type: ignore
 from src.ast import ast
 import ctypes
 

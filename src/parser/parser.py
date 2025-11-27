@@ -1,4 +1,4 @@
-import ply.yacc as yacc
+import ply.yacc as yacc # type: ignore
 from src.lexer.lexer import Lexer
 from src.ast import ast
 # from ast import Number, Identifier, BinaryOp, Assign, Program, String, Character, Bool, Write
