@@ -32,10 +32,10 @@ class Lexer:
         'UDOUBLE8',
         'UDOUBLE64',
         'BOOL',     # BOOL
-        'NULL',
-        'CHAR',
-        'TRUE',
-        'FALSE',
+        'NULL',     # null
+        'CHAR',     # char
+        'TRUE',     # true
+        'FALSE',    # false
         'WRITE',
     ]
 
@@ -102,8 +102,6 @@ class Lexer:
 
 
     t_BOOL = r'bool'
-    t_TRUE = r'true'
-    t_FALSE = r'false'
     t_NULL = r'null'
     t_ignore_COMMENT = r'//.*'
     t_WRITE = r'write'                  # write or printf
@@ -130,6 +128,16 @@ class Lexer:
     def t_CHAR(self, t):
         r"'(.)'"
         t.value = t.value[1] # extract the inner character
+        return t
+    
+    def t_TRUE(self, t):
+        r'true'
+        t.value = True
+        return t
+    
+    def t_FALSE(self, t):
+        r'false'
+        t.value = False
         return t
 
     def t_ID(self, t):

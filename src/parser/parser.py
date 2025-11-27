@@ -56,12 +56,6 @@ class Parser:
         "expression : CHAR"
         p[0] = ast.Character(p[1])
 
-    # boolean - need to fix this
-    # def p_literal(self, p):
-    #     """literal : TRUE
-    #         | FALSE"""
-    #     p[0] = Bool(p[1])
-
     # with parenthesis
     def p_expression_group(self, p):
         """expression : LPAREN expression RPAREN"""
@@ -77,7 +71,8 @@ class Parser:
         """type : INT 
             | STRING 
             | DOUBLE
-            | CHAR"""
+            | CHAR
+            | BOOL"""
         p[0] = p[1]
 
     # add a rule for typed variable declaration
@@ -90,6 +85,15 @@ class Parser:
         "statement : type ID"
         # p[0] = ('decl', 'int', p[2], None)
         p[0] = ast.Assign(p[2], None, p[1])
+
+    # boolean
+    def p_expression_true(self, p):
+        "expression : TRUE"
+        p[0] = ast.Bool(True)
+
+    def p_expression_false(self, p):
+        "expression : FALSE"
+        p[0] = ast.Bool(False)
 
     # empty line
     def p_empty(self, t):

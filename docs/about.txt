@@ -3,7 +3,7 @@ Yanji Programming Language is a typed, low-level and high-level programming Lang
 Designed to be fast, modern and beginer-friendly.
 
 Bugs and errors:
-    1. Boolean
+    1. Printing
 
 TO-DOs
     1. Exceptions and error handling
@@ -17,6 +17,7 @@ TO-DOs
     9. ==, !=, >, <, >=, <=
     10. switch
     11. do-while loops
+    12. re-assigning variables
 
 Scopes
     1. local 

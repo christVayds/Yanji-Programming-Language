@@ -17,9 +17,16 @@ def main(filename: str):
         print(ast)
         compiler.code_gen(ast)
 
+    # exit main function
     compiler.finish()
+
+    # print module
     print(f'{compiler.module}\n\n')
-    compiler.JITExec()
+
+    # JIT compile execution
+    if compiler.success:
+        # compiler.JITExec()
+        pass
 
 if __name__=='__main__':
     try:

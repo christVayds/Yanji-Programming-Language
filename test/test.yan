@@ -1,4 +1,4 @@
-int age = 20
-int age2 = 30+age
-str msg = "hello world"
-write "hello mars"
+//int age = 20
+bool studying = true
+//str msg = "hello world"
+//write "hello mars"

@@ -8,6 +8,8 @@ class Compiler:
     scopes = [] # list of scopes
     globalStrCount = 0
 
+    success = True
+
     def __init__(self, module:str = 'module'):
         # initialize LLVM only once
         # binding.initialize()
@@ -61,6 +63,8 @@ class Compiler:
             return self.nodeString(node)
         elif isinstance(node, ast.Write):               # print / write
             return self.nodeWrite(node.expr)
+        elif isinstance(node, ast.Bool):                # bool
+            return self.nodeBool(node.value)
         
     def NodeValue(self, node: ast.ASTnode):
         pass
@@ -92,6 +96,12 @@ class Compiler:
     def nodeChar(self, value: str):
         return ir.Constant(ir.IntType(8), ord(value))
     
+    def nodeBool(self, value):
+        bool_type = ir.IntType(1)
+        if value:
+            return ir.Constant(bool_type, 1)
+        return ir.Constant(bool_type, 0)
+    
     def nodeBinOP(self, node: ast.ASTnode):
         left = self.code_gen(node.left)
         right = self.code_gen(node.right)
@@ -108,23 +118,43 @@ class Compiler:
         value = self.code_gen(node.value)
 
         if node.type == 'int':
-            ptr = self.builder.alloca(ir.IntType(32))
-            self.builder.store(value, ptr)
-            self.symbol_table[node.name] = ptr
-            return ptr
+            return self.storeInt(node.name, value)
         elif node.type == 'char':
-            ptr = self.builder.alloca(ir.IntType(8))
-            self.builder.store(value, ptr)
-            self.symbol_table[node.name] = ptr
-            return ptr
+            return self.storeChar(node.name, value)
         elif node.type == 'str':
-            ptr = self.builder.alloca(ir.IntType(8).as_pointer(), name='str_var')
-            self.builder.store(value, ptr)
-            self.symbol_table[node.name] = ptr
-            return ptr
+            return self.storeString(node.name, value)
+        elif node.type == 'bool':
+            return self.storeBool(node.name, value)
+        else:
+            if node.name in self.symbol_table:
+                pass
+
+    def storeInt(self, name, value):
+        ptr = self.builder.alloca(ir.IntType(32))
+        self.builder.store(value, ptr)
+        self.symbol_table[name] = {'ptr': ptr, 'type': 'int'}
+        return ptr
+    
+    def storeString(self, name, value):
+        ptr = self.builder.alloca(ir.IntType(8).as_pointer(), name='str_var')
+        self.builder.store(value, ptr)
+        self.symbol_table[name] = {'ptr': ptr, 'type': 'str'}
+        return ptr
+    
+    def storeChar(self, name, value):
+        ptr = self.builder.alloca(ir.IntType(8))
+        self.builder.store(value, ptr)
+        self.symbol_table[name] = {'ptr': ptr, 'type': 'char'}
+        return ptr
+    
+    def storeBool(self, name, value):
+        ptr = self.builder.alloca(ir.IntType(1))
+        self.builder.store(value, ptr)
+        self.symbol_table[name] = {'ptr': ptr, 'type': 'bool'}
+        return ptr
     
     def nodeID(self, node: ast.ASTnode):
-        ptr = self.symbol_table[node.name]
+        ptr = self.symbol_table[node.name]['ptr']
         return self.builder.load(ptr, name=node.name)
     
     def add(self, left, right):
@@ -143,8 +173,11 @@ class Compiler:
         return self.builder.udiv(left, right)
     
     def create_internal_printf(self):
+        fmt_ty = ir.IntType(8).as_pointer()
+        int_ty = ir.IntType(32)
+
         # void _internal_printf(i8*) - create new function for printing
-        func_ty = ir.FunctionType(ir.VoidType(), [ir.IntType(8).as_pointer()])
+        func_ty = ir.FunctionType(ir.VoidType(), [fmt_ty, int_ty])
         func = ir.Function(self.module, func_ty, name='_internal_printf')
         block = func.append_basic_block(name='entry')
         builder = ir.IRBuilder(block)
@@ -159,6 +192,7 @@ class Compiler:
         return func
     
     def string_Constant(self, text: str):
+        # codegen
         text_bytes = bytearray(text.encode('utf8') + b'\00')
         string_ty = ir.ArrayType(ir.IntType(8), len(text_bytes))
 
