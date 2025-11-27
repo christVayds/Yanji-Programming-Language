@@ -52,25 +52,25 @@ class Compiler:
         elif isinstance(node, ast.Assign):              # Assign
             return self.nodeAssign(node)
         elif isinstance(node, ast.Number):              # Number
-            return self.nodeNumber(node.value)
+            return self.nodeNumber(node)
         elif isinstance(node, ast.BinaryOp):            # BinaaryOp
             return self.nodeBinOP(node)
         elif isinstance(node, ast.Identifier):          # Identifier
             return self.nodeID(node)
         elif isinstance(node, ast.Character):           # Character
-            return self.nodeChar(node.value)
+            return self.nodeChar(node)
         elif isinstance(node, ast.String):              # String
             return self.nodeString(node)
         elif isinstance(node, ast.Write):               # print / write
             return self.nodeWrite(node.expr)
         elif isinstance(node, ast.Bool):                # bool
-            return self.nodeBool(node.value)
+            return self.nodeBool(node)
         
     def NodeValue(self, node: ast.ASTnode):
         pass
 
-    def nodeNumber(self, value: int):
-        return ir.Constant(ir.IntType(32), value)
+    def nodeNumber(self, node: ast.Number):
+        return ir.Constant(ir.IntType(32), node.value)
     
     def nodeString(self, node: ast.String):
         text = node.value
@@ -93,12 +93,12 @@ class Compiler:
 
         return str_ptr
     
-    def nodeChar(self, value: str):
-        return ir.Constant(ir.IntType(8), ord(value))
+    def nodeChar(self, node: ast.Character):
+        return ir.Constant(ir.IntType(8), ord(node.value))
     
-    def nodeBool(self, value):
+    def nodeBool(self, node: ast.Bool):
         bool_type = ir.IntType(1)
-        if value:
+        if node.value:
             return ir.Constant(bool_type, 1)
         return ir.Constant(bool_type, 0)
     
@@ -115,39 +115,51 @@ class Compiler:
             return self.sdiv(left, right)
     
     def nodeAssign(self, node: ast.ASTnode):
-        value = self.code_gen(node.value)
+        # value = self.code_gen(node.value)
 
         if node.type == 'int':
-            return self.storeInt(node.name, value)
+            return self.storeInt(node.name, node.value)
         elif node.type == 'char':
-            return self.storeChar(node.name, value)
+            return self.storeChar(node.name, node.value)
         elif node.type == 'str':
-            return self.storeString(node.name, value)
+            return self.storeString(node.name, node.value)
         elif node.type == 'bool':
-            return self.storeBool(node.name, value)
+            return self.storeBool(node.name, node.value)
         else:
             if node.name in self.symbol_table:
                 pass
 
-    def storeInt(self, name, value):
+    def storeInt(self, name, node):
+        value = self.nodeNumber(node)
+
         ptr = self.builder.alloca(ir.IntType(32))
         self.builder.store(value, ptr)
         self.symbol_table[name] = {'ptr': ptr, 'type': 'int'}
         return ptr
     
-    def storeString(self, name, value):
-        ptr = self.builder.alloca(ir.IntType(8).as_pointer(), name='str_var')
-        self.builder.store(value, ptr)
-        self.symbol_table[name] = {'ptr': ptr, 'type': 'str'}
+    def storeString(self, name, node):
+        value = ast.String(node)
+        
+        var_ptr = self.nodeString(node)
+        str_ptr = self.builder.bitcast(var_ptr, ir.IntType(8).as_pointer())
+        textbytes = bytearray(str(value.value.value).encode('utf8') + b'\00')
+        
+        ptr = self.builder.alloca(ir.IntType(8).as_pointer())
+        self.builder.store(str_ptr, ptr)
+        self.symbol_table[name] = {'ptr': ptr, 'type': 'str', 'textbytes': textbytes}
         return ptr
     
-    def storeChar(self, name, value):
+    def storeChar(self, name, node):
+        value = self.nodeChar(node)
+
         ptr = self.builder.alloca(ir.IntType(8))
         self.builder.store(value, ptr)
         self.symbol_table[name] = {'ptr': ptr, 'type': 'char'}
         return ptr
     
-    def storeBool(self, name, value):
+    def storeBool(self, name, node):
+        value = self.code_gen(node)
+
         ptr = self.builder.alloca(ir.IntType(1))
         self.builder.store(value, ptr)
         self.symbol_table[name] = {'ptr': ptr, 'type': 'bool'}
@@ -174,10 +186,10 @@ class Compiler:
     
     def create_internal_printf(self):
         fmt_ty = ir.IntType(8).as_pointer()
-        int_ty = ir.IntType(32)
+        # int_ty = ir.IntType(32)
 
-        # void _internal_printf(i8*) - create new function for printing
-        func_ty = ir.FunctionType(ir.VoidType(), [fmt_ty, int_ty])
+        # void _internal_printf_int(i8*, i32) - create new function for printing
+        func_ty = ir.FunctionType(ir.VoidType(), [fmt_ty])
         func = ir.Function(self.module, func_ty, name='_internal_printf')
         block = func.append_basic_block(name='entry')
         builder = ir.IRBuilder(block)
@@ -185,16 +197,20 @@ class Compiler:
         #load printf
         printf = self.module.globals.get('printf')
 
-        # forward the string to printf
+        # forward the string and integer to printf
         builder.call(printf, [func.args[0]])
 
         builder.ret_void()
         return func
     
-    def string_Constant(self, text: str):
+    def string_Constant(self, text: str, text_bytes = None):
+        string_ty = None
         # codegen
-        text_bytes = bytearray(text.encode('utf8') + b'\00')
-        string_ty = ir.ArrayType(ir.IntType(8), len(text_bytes))
+        if not text_bytes:
+            text_bytes = bytearray(text.encode('utf8') + b'\00')
+            string_ty = ir.ArrayType(ir.IntType(8), len(text_bytes))
+        else:
+            string_ty = ir.ArrayType(ir.IntType(8), len(text_bytes))
 
         gvar = ir.GlobalVariable(self.module, string_ty, name=f'.str{len(self.module.globals)}')
         gvar.global_constant = True
@@ -204,8 +220,23 @@ class Compiler:
         return gvar
     
     def nodeWrite(self, expr):
-        # text = str(self.code_gen(expr))
-        text = expr.value
+        # expr = node
+        textstr = ""
+        var_bytes = None
+
+        if isinstance(expr, ast.String):
+            textstr = expr.value
+        elif isinstance(expr, ast.Number):
+            pass
+        elif isinstance(expr, ast.Character):
+            pass
+        elif isinstance(expr, ast.Bool):
+            pass
+        elif isinstance(expr, ast.Identifier):
+            if expr.name in self.symbol_table:
+                var_info = self.symbol_table[expr.name]
+                var_bytes = var_info['textbytes'] if 'textbytes' in var_info else None
+                textstr = None
         
         # ensure print exist
         if '_internal_printf' not in self.module.globals:
@@ -214,7 +245,7 @@ class Compiler:
         internal_printf = self.module.globals['_internal_printf']
 
         # create the global string
-        gstr = self.string_Constant(text)
+        gstr = self.string_Constant(textstr, var_bytes)
 
         # create pointer to first character
         ptr = self.builder.gep(gstr, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), 0)])

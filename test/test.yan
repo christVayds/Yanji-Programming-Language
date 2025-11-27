@@ -1,4 +1,3 @@
-//int age = 20
-bool studying = true
-//str msg = "hello world"
-//write "hello mars"
+int age = 20
+str msg = "hello world"
+write msg

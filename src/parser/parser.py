@@ -8,8 +8,10 @@ class Parser:
     tokens = Lexer.tokens
 
     precedence = (
+        ('nonassoc', 'EQ', 'LT', 'LTE', 'GT', 'GTE', 'NEQ'),  # nonassociative operators
         ('left', 'PLUS', 'MINUS'),
         ('left', 'TIMES', 'DIVIDE'),
+        ('right', 'MINUS'),             # unary minus
     )
 
     def __init__(self):
@@ -47,6 +49,22 @@ class Parser:
         "expression : NUMBER"
         p[0] = ast.Number(p[1])
 
+    # uminus operator
+    def p_expression_uminus(self, p):
+        "expression : MINUS expression %prec MINUS"
+        p[0] = ast.BinaryOp('-', ast.Number(0), p[2])
+
+    # compare operators
+    def p_expression_compare(self, p):
+        """expression : expression EQ expression
+            | expression NEQ expression
+            | expression LT expression
+            | expression LTE expression
+            | expression GT expression
+            | expression GTE expression"""
+        p[0] = ast.CompareOp(p[2], p[1], p[3])
+
+    # strings
     def p_expression_string(self, p):
         "expression : STRING"
         p[0] = ast.String(p[1])

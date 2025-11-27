@@ -29,9 +29,10 @@ def main(filename: str):
         pass
 
 if __name__=='__main__':
-    try:
+    count = len(sys.argv)
+    if count > 1:
         filename = sys.argv[1]
         filename = f'test/{filename}'
         main(filename=filename)
-    except IndexError:
-        print('No file')
+    else:
+        print("no file")

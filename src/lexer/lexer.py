@@ -37,6 +37,14 @@ class Lexer:
         'TRUE',     # true
         'FALSE',    # false
         'WRITE',
+        'EQ',       # ==
+        'NEQ',      # !=
+        'LT',       # <
+        'LTE',      # <=
+        'GT',       # >
+        'GTE',      # >=
+        'SEMICOLON',
+        'COMMA',
     ]
 
     reserved = {
@@ -74,6 +82,14 @@ class Lexer:
     t_EQUAL = r'='
     t_LPAREN = r'\('
     t_RPAREN = r'\)'
+    t_EQ = r'=='
+    t_NEQ = r'!='
+    t_LT = r'<'
+    t_LTE = r'<='
+    t_GT = r'>'
+    t_GTE = r'>='
+    t_SEMICOLON = r';'
+    t_COMMA = r','
     t_IF = r'if'
     t_ELSE = r'else'
     t_ELSEIF = r'elseif'

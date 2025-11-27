@@ -45,6 +45,15 @@ class BinaryOp(ASTnode):
 
     def __repr__(self):
         return f"BinaryOp({self.op}, {self.left}, {self.right})"
+    
+class CompareOp(ASTnode):
+    def __init__(self, op, left, right):
+        self.op = op                        # ==, !=, <, <=, >, >=
+        self.left = left
+        self.right = right
+
+    def __repr__(self):
+        return f"CompareOp({self.op}, {self.left}, {self.right})"
 
 # statement nodes
 class Assign(ASTnode):
