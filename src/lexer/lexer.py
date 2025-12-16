@@ -11,6 +11,8 @@ class Lexer:
         'DIVIDE',
         'LPAREN',
         'RPAREN',
+        'LBRACE',
+        'RBRACE',
         'ID',
         'EQUAL',
         'IF',
@@ -82,6 +84,8 @@ class Lexer:
     t_EQUAL = r'='
     t_LPAREN = r'\('
     t_RPAREN = r'\)'
+    t_LBRACE = r'\{'
+    t_RBRACE = r'\}'
     t_EQ = r'=='
     t_NEQ = r'!='
     t_LT = r'<'
@@ -164,16 +168,6 @@ class Lexer:
     def tokenize(self, text):
         self.lexer.input(text)
         return list(self.lexer)
-    
-    def t_lbrace(self, t):
-        r'\{'
-        t.type = '{'
-        return t
-    
-    def t_rbrace(self, t):
-        r'\}'
-        t.type = '}'
-        return t
 
     # track line numbers
     def t_newline(self, t):

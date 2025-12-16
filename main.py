@@ -15,13 +15,13 @@ def main(filename: str):
         parser = Parser()
         ast = parser.parser.parse(line, lexer=parser.lexer.lexer)
         print(ast)
-        compiler.code_gen(ast)
+        # compiler.code_gen(ast)
 
     # exit main function
     compiler.finish()
 
     # print module
-    print(f'{compiler.module}\n\n')
+    # print(f'{compiler.module}\n\n')
 
     # JIT compile execution
     if compiler.success:

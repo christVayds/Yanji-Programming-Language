@@ -1,3 +1,2 @@
-int age = 20
-str msg = "hello world"
-write msg
+bool study = true
+if(study == false){study = false}

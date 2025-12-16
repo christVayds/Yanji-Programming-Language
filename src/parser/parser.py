@@ -127,6 +127,17 @@ class Parser:
         "statement : WRITE expression"
         p[0] = ast.Write(p[2])
 
+    # if statement
+    def p_statement_if(self, p):
+        """statement : IF LPAREN expression RPAREN LBRACE program RBRACE
+            | IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+        """
+        if len(p) == 8:
+            p[0] = ast.IfStatement(p[3], p[6]) # no else branch
+        else:
+            p[0] = ast.IfStatement(p[3], p[6], p[10]) # with else branch
+
+    # error for syntax error
     def p_error(self, p):
         if p:
             print('(parser) Syntax Error', p)

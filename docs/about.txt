@@ -2,8 +2,17 @@
 Yanji Programming Language is a typed, low-level and high-level programming Language.
 Designed to be fast, modern and beginer-friendly.
 
+self.symbol_table = {
+    'name': {
+        'ptr': pointer-of-the-variable,         # ptr of the variable
+        'type': int,                            # type of the variable
+        'text_bytes': textbytes(),              # textbytes only for str
+        'mutable': true,                        # if mutable
+    }
+}
+
 Bugs and errors:
-    1. Printing
+    1. Printing - check later
 
 TO-DOs
     1. Exceptions and error handling
@@ -17,7 +26,8 @@ TO-DOs
     9. ==, !=, >, <, >=, <=
     10. switch
     11. do-while loops
-    12. re-assigning variables
+    12. re-assigning variables              # complete
+    13. complete the data types of int and double
 
 Scopes
     1. local 
@@ -48,10 +58,16 @@ datatypes:
     arrays 
     lists
 
-int age = 20            # declared
-num = 20                # auto declaration of type
-msg = "hello world"     # string
-int8 sum;               # undeclared value
+int age = 20                # declared
+age = 30                    # error - immutable variable cannot be change
+str msg = "hello world"     # string
+int8 sum;                   # undeclared value
+mut int x = 100             # mutable variable
+x = 30                      # only mutable variable can be change
+
+IO:
+    write name              # only print string
+    read name               # get input from user
 
 # ARRAYS
 int arr[10] = {}        # array of type int

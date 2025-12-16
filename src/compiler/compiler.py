@@ -72,8 +72,17 @@ class Compiler:
     def nodeNumber(self, node: ast.Number):
         return ir.Constant(ir.IntType(32), node.value)
     
-    def nodeString(self, node: ast.String):
-        text = node.value
+    def nodeString(self, node: ast.ASTnode):
+        text = ""
+        if isinstance(node, ast.String):
+            text = node.value
+        elif isinstance(node, ast.Identifier):
+            pass
+        else:
+            print(f'Error: nodeString received unsupported node type {type(node)}')
+            self.success = False
+            return None
+        
         name = f'str_ptr_{self.globalStrCount}'
         self.globalStrCount+=1
 
@@ -127,7 +136,11 @@ class Compiler:
             return self.storeBool(node.name, node.value)
         else:
             if node.name in self.symbol_table:
-                pass
+                return self.storeString(node.name, node.value)
+            else:
+                print(f'Error: Unknown type for variable {node.name}')
+                self.success = False
+                return None
 
     def storeInt(self, name, node):
         value = self.nodeNumber(node)
@@ -138,11 +151,22 @@ class Compiler:
         return ptr
     
     def storeString(self, name, node):
-        value = ast.String(node)
-        
-        var_ptr = self.nodeString(node)
-        str_ptr = self.builder.bitcast(var_ptr, ir.IntType(8).as_pointer())
-        textbytes = bytearray(str(value.value.value).encode('utf8') + b'\00')
+        value = None
+        var_ptr = None
+        str_ptr = None
+        textbytes = None
+        if isinstance(node, ast.Identifier):
+            value = self.symbol_table[node.name]['ptr']
+            var_ptr = value
+
+            str_ptr = self.builder.bitcast(var_ptr, ir.IntType(8).as_pointer())
+            textbytes = self.symbol_table[node.name]['textbytes'] if 'textbytes' in self.symbol_table[node.name] else None
+        elif isinstance(node, ast.String):
+            value = ast.String(node)
+            var_ptr = self.nodeString(node)
+
+            str_ptr = self.builder.bitcast(var_ptr, ir.IntType(8).as_pointer())
+            textbytes = bytearray(str(value.value.value).encode('utf8') + b'\00')
         
         ptr = self.builder.alloca(ir.IntType(8).as_pointer())
         self.builder.store(str_ptr, ptr)

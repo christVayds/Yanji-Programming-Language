@@ -5,10 +5,8 @@ Unused terminals:
     COMMA
     DOUBLE64
     DOUBLE8
-    ELSE
     ELSEIF
     FOR
-    IF
     INT64
     INT8
     NULL
@@ -56,6 +54,8 @@ Rule 29    expression -> FALSE
 Rule 30    empty -> <empty>
 Rule 31    statement -> WRITE STRING
 Rule 32    statement -> WRITE expression
+Rule 33    statement -> IF LPAREN expression RPAREN LBRACE program RBRACE
+Rule 34    statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
 
 Terminals, with rules where they appear
 
@@ -66,7 +66,7 @@ DIVIDE               : 7
 DOUBLE               : 23
 DOUBLE64             : 
 DOUBLE8              : 
-ELSE                 : 
+ELSE                 : 34
 ELSEIF               : 
 EQ                   : 11
 EQUAL                : 4 26
@@ -75,11 +75,12 @@ FOR                  :
 GT                   : 15
 GTE                  : 16
 ID                   : 4 20 26 27
-IF                   : 
+IF                   : 33 34
 INT                  : 21
 INT64                : 
 INT8                 : 
-LPAREN               : 19
+LBRACE               : 33 34 34
+LPAREN               : 19 33 34
 LT                   : 13
 LTE                  : 14
 MINUS                : 6 10
@@ -87,7 +88,8 @@ NEQ                  : 12
 NULL                 : 
 NUMBER               : 9
 PLUS                 : 5
-RPAREN               : 19
+RBRACE               : 33 34 34
+RPAREN               : 19 33 34
 SEMICOLON            : 
 STRING               : 17 22 31
 TIMES                : 8
@@ -105,8 +107,8 @@ error                :
 Nonterminals, with rules where they appear
 
 empty                : 3
-expression           : 4 5 5 6 6 7 7 8 8 10 11 11 12 12 13 13 14 14 15 15 16 16 19 26 32
-program              : 1 0
+expression           : 4 5 5 6 6 7 7 8 8 10 11 11 12 12 13 13 14 14 15 15 16 16 19 26 32 33 34
+program              : 1 33 34 34 0
 statement            : 1 2
 type                 : 26 27
 
@@ -123,6 +125,8 @@ state 0
     (27) statement -> . type ID
     (31) statement -> . WRITE STRING
     (32) statement -> . WRITE expression
+    (33) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE
+    (34) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
     (30) empty -> .
     (21) type -> . INT
     (22) type -> . STRING
@@ -132,6 +136,7 @@ state 0
 
   ! shift/reduce conflict for ID resolved as shift
   ! shift/reduce conflict for WRITE resolved as shift
+  ! shift/reduce conflict for IF resolved as shift
   ! shift/reduce conflict for INT resolved as shift
   ! shift/reduce conflict for STRING resolved as shift
   ! shift/reduce conflict for DOUBLE resolved as shift
@@ -139,15 +144,17 @@ state 0
   ! shift/reduce conflict for BOOL resolved as shift
     ID              shift and go to state 4
     WRITE           shift and go to state 6
+    IF              shift and go to state 8
     $end            reduce using rule 30 (empty -> .)
-    INT             shift and go to state 8
+    INT             shift and go to state 9
     STRING          shift and go to state 7
-    DOUBLE          shift and go to state 9
-    CHAR            shift and go to state 10
-    BOOL            shift and go to state 11
+    DOUBLE          shift and go to state 10
+    CHAR            shift and go to state 11
+    BOOL            shift and go to state 12
 
   ! ID              [ reduce using rule 30 (empty -> .) ]
   ! WRITE           [ reduce using rule 30 (empty -> .) ]
+  ! IF              [ reduce using rule 30 (empty -> .) ]
   ! INT             [ reduce using rule 30 (empty -> .) ]
   ! STRING          [ reduce using rule 30 (empty -> .) ]
   ! DOUBLE          [ reduce using rule 30 (empty -> .) ]
@@ -168,6 +175,8 @@ state 1
     (27) statement -> . type ID
     (31) statement -> . WRITE STRING
     (32) statement -> . WRITE expression
+    (33) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE
+    (34) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
     (21) type -> . INT
     (22) type -> . STRING
     (23) type -> . DOUBLE
@@ -176,13 +185,14 @@ state 1
 
     ID              shift and go to state 4
     WRITE           shift and go to state 6
-    INT             shift and go to state 8
+    IF              shift and go to state 8
+    INT             shift and go to state 9
     STRING          shift and go to state 7
-    DOUBLE          shift and go to state 9
-    CHAR            shift and go to state 10
-    BOOL            shift and go to state 11
+    DOUBLE          shift and go to state 10
+    CHAR            shift and go to state 11
+    BOOL            shift and go to state 12
 
-    statement                      shift and go to state 12
+    statement                      shift and go to state 13
     type                           shift and go to state 5
 
 state 2
@@ -191,12 +201,14 @@ state 2
 
     ID              reduce using rule 2 (program -> statement .)
     WRITE           reduce using rule 2 (program -> statement .)
+    IF              reduce using rule 2 (program -> statement .)
     INT             reduce using rule 2 (program -> statement .)
     STRING          reduce using rule 2 (program -> statement .)
     DOUBLE          reduce using rule 2 (program -> statement .)
     CHAR            reduce using rule 2 (program -> statement .)
     BOOL            reduce using rule 2 (program -> statement .)
     $end            reduce using rule 2 (program -> statement .)
+    RBRACE          reduce using rule 2 (program -> statement .)
 
 
 state 3
@@ -205,19 +217,21 @@ state 3
 
     ID              reduce using rule 3 (program -> empty .)
     WRITE           reduce using rule 3 (program -> empty .)
+    IF              reduce using rule 3 (program -> empty .)
     INT             reduce using rule 3 (program -> empty .)
     STRING          reduce using rule 3 (program -> empty .)
     DOUBLE          reduce using rule 3 (program -> empty .)
     CHAR            reduce using rule 3 (program -> empty .)
     BOOL            reduce using rule 3 (program -> empty .)
     $end            reduce using rule 3 (program -> empty .)
+    RBRACE          reduce using rule 3 (program -> empty .)
 
 
 state 4
 
     (4) statement -> ID . EQUAL expression
 
-    EQUAL           shift and go to state 13
+    EQUAL           shift and go to state 14
 
 
 state 5
@@ -225,7 +239,7 @@ state 5
     (26) statement -> type . ID EQUAL expression
     (27) statement -> type . ID
 
-    ID              shift and go to state 14
+    ID              shift and go to state 15
 
 
 state 6
@@ -251,16 +265,16 @@ state 6
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    STRING          shift and go to state 15
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    STRING          shift and go to state 16
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 16
+    expression                     shift and go to state 17
 
 state 7
 
@@ -271,47 +285,57 @@ state 7
 
 state 8
 
+    (33) statement -> IF . LPAREN expression RPAREN LBRACE program RBRACE
+    (34) statement -> IF . LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+
+    LPAREN          shift and go to state 25
+
+
+state 9
+
     (21) type -> INT .
 
     ID              reduce using rule 21 (type -> INT .)
 
 
-state 9
+state 10
 
     (23) type -> DOUBLE .
 
     ID              reduce using rule 23 (type -> DOUBLE .)
 
 
-state 10
+state 11
 
     (24) type -> CHAR .
 
     ID              reduce using rule 24 (type -> CHAR .)
 
 
-state 11
+state 12
 
     (25) type -> BOOL .
 
     ID              reduce using rule 25 (type -> BOOL .)
 
 
-state 12
+state 13
 
     (1) program -> program statement .
 
     ID              reduce using rule 1 (program -> program statement .)
     WRITE           reduce using rule 1 (program -> program statement .)
+    IF              reduce using rule 1 (program -> program statement .)
     INT             reduce using rule 1 (program -> program statement .)
     STRING          reduce using rule 1 (program -> program statement .)
     DOUBLE          reduce using rule 1 (program -> program statement .)
     CHAR            reduce using rule 1 (program -> program statement .)
     BOOL            reduce using rule 1 (program -> program statement .)
     $end            reduce using rule 1 (program -> program statement .)
+    RBRACE          reduce using rule 1 (program -> program statement .)
 
 
-state 13
+state 14
 
     (4) statement -> ID EQUAL . expression
     (5) expression -> . expression PLUS expression
@@ -333,46 +357,50 @@ state 13
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 24
+    expression                     shift and go to state 26
 
-state 14
+state 15
 
     (26) statement -> type ID . EQUAL expression
     (27) statement -> type ID .
 
-    EQUAL           shift and go to state 26
+    EQUAL           shift and go to state 28
     ID              reduce using rule 27 (statement -> type ID .)
     WRITE           reduce using rule 27 (statement -> type ID .)
+    IF              reduce using rule 27 (statement -> type ID .)
     INT             reduce using rule 27 (statement -> type ID .)
     STRING          reduce using rule 27 (statement -> type ID .)
     DOUBLE          reduce using rule 27 (statement -> type ID .)
     CHAR            reduce using rule 27 (statement -> type ID .)
     BOOL            reduce using rule 27 (statement -> type ID .)
     $end            reduce using rule 27 (statement -> type ID .)
+    RBRACE          reduce using rule 27 (statement -> type ID .)
 
 
-state 15
+state 16
 
     (31) statement -> WRITE STRING .
     (17) expression -> STRING .
 
   ! reduce/reduce conflict for ID resolved using rule 17 (expression -> STRING .)
   ! reduce/reduce conflict for WRITE resolved using rule 17 (expression -> STRING .)
+  ! reduce/reduce conflict for IF resolved using rule 17 (expression -> STRING .)
   ! reduce/reduce conflict for INT resolved using rule 17 (expression -> STRING .)
   ! reduce/reduce conflict for STRING resolved using rule 17 (expression -> STRING .)
   ! reduce/reduce conflict for DOUBLE resolved using rule 17 (expression -> STRING .)
   ! reduce/reduce conflict for CHAR resolved using rule 17 (expression -> STRING .)
   ! reduce/reduce conflict for BOOL resolved using rule 17 (expression -> STRING .)
   ! reduce/reduce conflict for $end resolved using rule 17 (expression -> STRING .)
+  ! reduce/reduce conflict for RBRACE resolved using rule 17 (expression -> STRING .)
     PLUS            reduce using rule 17 (expression -> STRING .)
     MINUS           reduce using rule 17 (expression -> STRING .)
     DIVIDE          reduce using rule 17 (expression -> STRING .)
@@ -385,24 +413,28 @@ state 15
     GTE             reduce using rule 17 (expression -> STRING .)
     ID              reduce using rule 17 (expression -> STRING .)
     WRITE           reduce using rule 17 (expression -> STRING .)
+    IF              reduce using rule 17 (expression -> STRING .)
     INT             reduce using rule 17 (expression -> STRING .)
     STRING          reduce using rule 17 (expression -> STRING .)
     DOUBLE          reduce using rule 17 (expression -> STRING .)
     CHAR            reduce using rule 17 (expression -> STRING .)
     BOOL            reduce using rule 17 (expression -> STRING .)
     $end            reduce using rule 17 (expression -> STRING .)
+    RBRACE          reduce using rule 17 (expression -> STRING .)
 
   ! ID              [ reduce using rule 31 (statement -> WRITE STRING .) ]
   ! WRITE           [ reduce using rule 31 (statement -> WRITE STRING .) ]
+  ! IF              [ reduce using rule 31 (statement -> WRITE STRING .) ]
   ! INT             [ reduce using rule 31 (statement -> WRITE STRING .) ]
   ! STRING          [ reduce using rule 31 (statement -> WRITE STRING .) ]
   ! DOUBLE          [ reduce using rule 31 (statement -> WRITE STRING .) ]
   ! CHAR            [ reduce using rule 31 (statement -> WRITE STRING .) ]
   ! BOOL            [ reduce using rule 31 (statement -> WRITE STRING .) ]
   ! $end            [ reduce using rule 31 (statement -> WRITE STRING .) ]
+  ! RBRACE          [ reduce using rule 31 (statement -> WRITE STRING .) ]
 
 
-state 16
+state 17
 
     (32) statement -> WRITE expression .
     (5) expression -> expression . PLUS expression
@@ -418,25 +450,27 @@ state 16
 
     ID              reduce using rule 32 (statement -> WRITE expression .)
     WRITE           reduce using rule 32 (statement -> WRITE expression .)
+    IF              reduce using rule 32 (statement -> WRITE expression .)
     INT             reduce using rule 32 (statement -> WRITE expression .)
     STRING          reduce using rule 32 (statement -> WRITE expression .)
     DOUBLE          reduce using rule 32 (statement -> WRITE expression .)
     CHAR            reduce using rule 32 (statement -> WRITE expression .)
     BOOL            reduce using rule 32 (statement -> WRITE expression .)
     $end            reduce using rule 32 (statement -> WRITE expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
-    EQ              shift and go to state 31
-    NEQ             shift and go to state 32
-    LT              shift and go to state 33
-    LTE             shift and go to state 34
-    GT              shift and go to state 35
-    GTE             shift and go to state 36
+    RBRACE          reduce using rule 32 (statement -> WRITE expression .)
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
+    EQ              shift and go to state 33
+    NEQ             shift and go to state 34
+    LT              shift and go to state 35
+    LTE             shift and go to state 36
+    GT              shift and go to state 37
+    GTE             shift and go to state 38
 
 
-state 17
+state 18
 
     (10) expression -> MINUS . expression
     (5) expression -> . expression PLUS expression
@@ -458,18 +492,18 @@ state 17
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 37
+    expression                     shift and go to state 39
 
-state 18
+state 19
 
     (9) expression -> NUMBER .
 
@@ -485,16 +519,18 @@ state 18
     GTE             reduce using rule 9 (expression -> NUMBER .)
     ID              reduce using rule 9 (expression -> NUMBER .)
     WRITE           reduce using rule 9 (expression -> NUMBER .)
+    IF              reduce using rule 9 (expression -> NUMBER .)
     INT             reduce using rule 9 (expression -> NUMBER .)
     STRING          reduce using rule 9 (expression -> NUMBER .)
     DOUBLE          reduce using rule 9 (expression -> NUMBER .)
     CHAR            reduce using rule 9 (expression -> NUMBER .)
     BOOL            reduce using rule 9 (expression -> NUMBER .)
     $end            reduce using rule 9 (expression -> NUMBER .)
+    RBRACE          reduce using rule 9 (expression -> NUMBER .)
     RPAREN          reduce using rule 9 (expression -> NUMBER .)
 
 
-state 19
+state 20
 
     (18) expression -> CHAR .
 
@@ -510,16 +546,18 @@ state 19
     GTE             reduce using rule 18 (expression -> CHAR .)
     ID              reduce using rule 18 (expression -> CHAR .)
     WRITE           reduce using rule 18 (expression -> CHAR .)
+    IF              reduce using rule 18 (expression -> CHAR .)
     INT             reduce using rule 18 (expression -> CHAR .)
     STRING          reduce using rule 18 (expression -> CHAR .)
     DOUBLE          reduce using rule 18 (expression -> CHAR .)
     CHAR            reduce using rule 18 (expression -> CHAR .)
     BOOL            reduce using rule 18 (expression -> CHAR .)
     $end            reduce using rule 18 (expression -> CHAR .)
+    RBRACE          reduce using rule 18 (expression -> CHAR .)
     RPAREN          reduce using rule 18 (expression -> CHAR .)
 
 
-state 20
+state 21
 
     (19) expression -> LPAREN . expression RPAREN
     (5) expression -> . expression PLUS expression
@@ -541,18 +579,18 @@ state 20
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 38
+    expression                     shift and go to state 40
 
-state 21
+state 22
 
     (20) expression -> ID .
 
@@ -568,16 +606,18 @@ state 21
     GTE             reduce using rule 20 (expression -> ID .)
     ID              reduce using rule 20 (expression -> ID .)
     WRITE           reduce using rule 20 (expression -> ID .)
+    IF              reduce using rule 20 (expression -> ID .)
     INT             reduce using rule 20 (expression -> ID .)
     STRING          reduce using rule 20 (expression -> ID .)
     DOUBLE          reduce using rule 20 (expression -> ID .)
     CHAR            reduce using rule 20 (expression -> ID .)
     BOOL            reduce using rule 20 (expression -> ID .)
     $end            reduce using rule 20 (expression -> ID .)
+    RBRACE          reduce using rule 20 (expression -> ID .)
     RPAREN          reduce using rule 20 (expression -> ID .)
 
 
-state 22
+state 23
 
     (28) expression -> TRUE .
 
@@ -593,16 +633,18 @@ state 22
     GTE             reduce using rule 28 (expression -> TRUE .)
     ID              reduce using rule 28 (expression -> TRUE .)
     WRITE           reduce using rule 28 (expression -> TRUE .)
+    IF              reduce using rule 28 (expression -> TRUE .)
     INT             reduce using rule 28 (expression -> TRUE .)
     STRING          reduce using rule 28 (expression -> TRUE .)
     DOUBLE          reduce using rule 28 (expression -> TRUE .)
     CHAR            reduce using rule 28 (expression -> TRUE .)
     BOOL            reduce using rule 28 (expression -> TRUE .)
     $end            reduce using rule 28 (expression -> TRUE .)
+    RBRACE          reduce using rule 28 (expression -> TRUE .)
     RPAREN          reduce using rule 28 (expression -> TRUE .)
 
 
-state 23
+state 24
 
     (29) expression -> FALSE .
 
@@ -618,16 +660,52 @@ state 23
     GTE             reduce using rule 29 (expression -> FALSE .)
     ID              reduce using rule 29 (expression -> FALSE .)
     WRITE           reduce using rule 29 (expression -> FALSE .)
+    IF              reduce using rule 29 (expression -> FALSE .)
     INT             reduce using rule 29 (expression -> FALSE .)
     STRING          reduce using rule 29 (expression -> FALSE .)
     DOUBLE          reduce using rule 29 (expression -> FALSE .)
     CHAR            reduce using rule 29 (expression -> FALSE .)
     BOOL            reduce using rule 29 (expression -> FALSE .)
     $end            reduce using rule 29 (expression -> FALSE .)
+    RBRACE          reduce using rule 29 (expression -> FALSE .)
     RPAREN          reduce using rule 29 (expression -> FALSE .)
 
 
-state 24
+state 25
+
+    (33) statement -> IF LPAREN . expression RPAREN LBRACE program RBRACE
+    (34) statement -> IF LPAREN . expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+    (5) expression -> . expression PLUS expression
+    (6) expression -> . expression MINUS expression
+    (7) expression -> . expression DIVIDE expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . NUMBER
+    (10) expression -> . MINUS expression
+    (11) expression -> . expression EQ expression
+    (12) expression -> . expression NEQ expression
+    (13) expression -> . expression LT expression
+    (14) expression -> . expression LTE expression
+    (15) expression -> . expression GT expression
+    (16) expression -> . expression GTE expression
+    (17) expression -> . STRING
+    (18) expression -> . CHAR
+    (19) expression -> . LPAREN expression RPAREN
+    (20) expression -> . ID
+    (28) expression -> . TRUE
+    (29) expression -> . FALSE
+
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
+
+    expression                     shift and go to state 41
+
+state 26
 
     (4) statement -> ID EQUAL expression .
     (5) expression -> expression . PLUS expression
@@ -643,25 +721,27 @@ state 24
 
     ID              reduce using rule 4 (statement -> ID EQUAL expression .)
     WRITE           reduce using rule 4 (statement -> ID EQUAL expression .)
+    IF              reduce using rule 4 (statement -> ID EQUAL expression .)
     INT             reduce using rule 4 (statement -> ID EQUAL expression .)
     STRING          reduce using rule 4 (statement -> ID EQUAL expression .)
     DOUBLE          reduce using rule 4 (statement -> ID EQUAL expression .)
     CHAR            reduce using rule 4 (statement -> ID EQUAL expression .)
     BOOL            reduce using rule 4 (statement -> ID EQUAL expression .)
     $end            reduce using rule 4 (statement -> ID EQUAL expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
-    EQ              shift and go to state 31
-    NEQ             shift and go to state 32
-    LT              shift and go to state 33
-    LTE             shift and go to state 34
-    GT              shift and go to state 35
-    GTE             shift and go to state 36
+    RBRACE          reduce using rule 4 (statement -> ID EQUAL expression .)
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
+    EQ              shift and go to state 33
+    NEQ             shift and go to state 34
+    LT              shift and go to state 35
+    LTE             shift and go to state 36
+    GT              shift and go to state 37
+    GTE             shift and go to state 38
 
 
-state 25
+state 27
 
     (17) expression -> STRING .
 
@@ -677,16 +757,18 @@ state 25
     GTE             reduce using rule 17 (expression -> STRING .)
     ID              reduce using rule 17 (expression -> STRING .)
     WRITE           reduce using rule 17 (expression -> STRING .)
+    IF              reduce using rule 17 (expression -> STRING .)
     INT             reduce using rule 17 (expression -> STRING .)
     STRING          reduce using rule 17 (expression -> STRING .)
     DOUBLE          reduce using rule 17 (expression -> STRING .)
     CHAR            reduce using rule 17 (expression -> STRING .)
     BOOL            reduce using rule 17 (expression -> STRING .)
     $end            reduce using rule 17 (expression -> STRING .)
+    RBRACE          reduce using rule 17 (expression -> STRING .)
     RPAREN          reduce using rule 17 (expression -> STRING .)
 
 
-state 26
+state 28
 
     (26) statement -> type ID EQUAL . expression
     (5) expression -> . expression PLUS expression
@@ -708,18 +790,18 @@ state 26
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 39
+    expression                     shift and go to state 42
 
-state 27
+state 29
 
     (5) expression -> expression PLUS . expression
     (5) expression -> . expression PLUS expression
@@ -741,18 +823,18 @@ state 27
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 40
+    expression                     shift and go to state 43
 
-state 28
+state 30
 
     (6) expression -> expression MINUS . expression
     (5) expression -> . expression PLUS expression
@@ -774,18 +856,18 @@ state 28
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 41
+    expression                     shift and go to state 44
 
-state 29
+state 31
 
     (7) expression -> expression DIVIDE . expression
     (5) expression -> . expression PLUS expression
@@ -807,18 +889,18 @@ state 29
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 42
+    expression                     shift and go to state 45
 
-state 30
+state 32
 
     (8) expression -> expression TIMES . expression
     (5) expression -> . expression PLUS expression
@@ -840,18 +922,18 @@ state 30
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 43
+    expression                     shift and go to state 46
 
-state 31
+state 33
 
     (11) expression -> expression EQ . expression
     (5) expression -> . expression PLUS expression
@@ -873,18 +955,18 @@ state 31
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 44
+    expression                     shift and go to state 47
 
-state 32
+state 34
 
     (12) expression -> expression NEQ . expression
     (5) expression -> . expression PLUS expression
@@ -906,18 +988,18 @@ state 32
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 45
+    expression                     shift and go to state 48
 
-state 33
+state 35
 
     (13) expression -> expression LT . expression
     (5) expression -> . expression PLUS expression
@@ -939,18 +1021,18 @@ state 33
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 46
+    expression                     shift and go to state 49
 
-state 34
+state 36
 
     (14) expression -> expression LTE . expression
     (5) expression -> . expression PLUS expression
@@ -972,18 +1054,18 @@ state 34
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 47
+    expression                     shift and go to state 50
 
-state 35
+state 37
 
     (15) expression -> expression GT . expression
     (5) expression -> . expression PLUS expression
@@ -1005,18 +1087,18 @@ state 35
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 48
+    expression                     shift and go to state 51
 
-state 36
+state 38
 
     (16) expression -> expression GTE . expression
     (5) expression -> . expression PLUS expression
@@ -1038,18 +1120,18 @@ state 36
     (28) expression -> . TRUE
     (29) expression -> . FALSE
 
-    NUMBER          shift and go to state 18
-    MINUS           shift and go to state 17
-    STRING          shift and go to state 25
-    CHAR            shift and go to state 19
-    LPAREN          shift and go to state 20
-    ID              shift and go to state 21
-    TRUE            shift and go to state 22
-    FALSE           shift and go to state 23
+    NUMBER          shift and go to state 19
+    MINUS           shift and go to state 18
+    STRING          shift and go to state 27
+    CHAR            shift and go to state 20
+    LPAREN          shift and go to state 21
+    ID              shift and go to state 22
+    TRUE            shift and go to state 23
+    FALSE           shift and go to state 24
 
-    expression                     shift and go to state 49
+    expression                     shift and go to state 52
 
-state 37
+state 39
 
     (10) expression -> MINUS expression .
     (5) expression -> expression . PLUS expression
@@ -1073,29 +1155,31 @@ state 37
     GTE             reduce using rule 10 (expression -> MINUS expression .)
     ID              reduce using rule 10 (expression -> MINUS expression .)
     WRITE           reduce using rule 10 (expression -> MINUS expression .)
+    IF              reduce using rule 10 (expression -> MINUS expression .)
     INT             reduce using rule 10 (expression -> MINUS expression .)
     STRING          reduce using rule 10 (expression -> MINUS expression .)
     DOUBLE          reduce using rule 10 (expression -> MINUS expression .)
     CHAR            reduce using rule 10 (expression -> MINUS expression .)
     BOOL            reduce using rule 10 (expression -> MINUS expression .)
     $end            reduce using rule 10 (expression -> MINUS expression .)
+    RBRACE          reduce using rule 10 (expression -> MINUS expression .)
     RPAREN          reduce using rule 10 (expression -> MINUS expression .)
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! DIVIDE          [ reduce using rule 10 (expression -> MINUS expression .) ]
   ! TIMES           [ reduce using rule 10 (expression -> MINUS expression .) ]
-  ! PLUS            [ shift and go to state 27 ]
-  ! MINUS           [ shift and go to state 28 ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 38
+state 40
 
     (19) expression -> LPAREN expression . RPAREN
     (5) expression -> expression . PLUS expression
@@ -1109,20 +1193,48 @@ state 38
     (15) expression -> expression . GT expression
     (16) expression -> expression . GTE expression
 
-    RPAREN          shift and go to state 50
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
-    EQ              shift and go to state 31
-    NEQ             shift and go to state 32
-    LT              shift and go to state 33
-    LTE             shift and go to state 34
-    GT              shift and go to state 35
-    GTE             shift and go to state 36
+    RPAREN          shift and go to state 53
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
+    EQ              shift and go to state 33
+    NEQ             shift and go to state 34
+    LT              shift and go to state 35
+    LTE             shift and go to state 36
+    GT              shift and go to state 37
+    GTE             shift and go to state 38
 
 
-state 39
+state 41
+
+    (33) statement -> IF LPAREN expression . RPAREN LBRACE program RBRACE
+    (34) statement -> IF LPAREN expression . RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+    (5) expression -> expression . PLUS expression
+    (6) expression -> expression . MINUS expression
+    (7) expression -> expression . DIVIDE expression
+    (8) expression -> expression . TIMES expression
+    (11) expression -> expression . EQ expression
+    (12) expression -> expression . NEQ expression
+    (13) expression -> expression . LT expression
+    (14) expression -> expression . LTE expression
+    (15) expression -> expression . GT expression
+    (16) expression -> expression . GTE expression
+
+    RPAREN          shift and go to state 54
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
+    EQ              shift and go to state 33
+    NEQ             shift and go to state 34
+    LT              shift and go to state 35
+    LTE             shift and go to state 36
+    GT              shift and go to state 37
+    GTE             shift and go to state 38
+
+
+state 42
 
     (26) statement -> type ID EQUAL expression .
     (5) expression -> expression . PLUS expression
@@ -1138,25 +1250,27 @@ state 39
 
     ID              reduce using rule 26 (statement -> type ID EQUAL expression .)
     WRITE           reduce using rule 26 (statement -> type ID EQUAL expression .)
+    IF              reduce using rule 26 (statement -> type ID EQUAL expression .)
     INT             reduce using rule 26 (statement -> type ID EQUAL expression .)
     STRING          reduce using rule 26 (statement -> type ID EQUAL expression .)
     DOUBLE          reduce using rule 26 (statement -> type ID EQUAL expression .)
     CHAR            reduce using rule 26 (statement -> type ID EQUAL expression .)
     BOOL            reduce using rule 26 (statement -> type ID EQUAL expression .)
     $end            reduce using rule 26 (statement -> type ID EQUAL expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
-    EQ              shift and go to state 31
-    NEQ             shift and go to state 32
-    LT              shift and go to state 33
-    LTE             shift and go to state 34
-    GT              shift and go to state 35
-    GTE             shift and go to state 36
+    RBRACE          reduce using rule 26 (statement -> type ID EQUAL expression .)
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
+    EQ              shift and go to state 33
+    NEQ             shift and go to state 34
+    LT              shift and go to state 35
+    LTE             shift and go to state 36
+    GT              shift and go to state 37
+    GTE             shift and go to state 38
 
 
-state 40
+state 43
 
     (5) expression -> expression PLUS expression .
     (5) expression -> expression . PLUS expression
@@ -1180,29 +1294,31 @@ state 40
     GTE             reduce using rule 5 (expression -> expression PLUS expression .)
     ID              reduce using rule 5 (expression -> expression PLUS expression .)
     WRITE           reduce using rule 5 (expression -> expression PLUS expression .)
+    IF              reduce using rule 5 (expression -> expression PLUS expression .)
     INT             reduce using rule 5 (expression -> expression PLUS expression .)
     STRING          reduce using rule 5 (expression -> expression PLUS expression .)
     DOUBLE          reduce using rule 5 (expression -> expression PLUS expression .)
     CHAR            reduce using rule 5 (expression -> expression PLUS expression .)
     BOOL            reduce using rule 5 (expression -> expression PLUS expression .)
     $end            reduce using rule 5 (expression -> expression PLUS expression .)
+    RBRACE          reduce using rule 5 (expression -> expression PLUS expression .)
     RPAREN          reduce using rule 5 (expression -> expression PLUS expression .)
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! DIVIDE          [ reduce using rule 5 (expression -> expression PLUS expression .) ]
   ! TIMES           [ reduce using rule 5 (expression -> expression PLUS expression .) ]
-  ! PLUS            [ shift and go to state 27 ]
-  ! MINUS           [ shift and go to state 28 ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 41
+state 44
 
     (6) expression -> expression MINUS expression .
     (5) expression -> expression . PLUS expression
@@ -1226,29 +1342,31 @@ state 41
     GTE             reduce using rule 6 (expression -> expression MINUS expression .)
     ID              reduce using rule 6 (expression -> expression MINUS expression .)
     WRITE           reduce using rule 6 (expression -> expression MINUS expression .)
+    IF              reduce using rule 6 (expression -> expression MINUS expression .)
     INT             reduce using rule 6 (expression -> expression MINUS expression .)
     STRING          reduce using rule 6 (expression -> expression MINUS expression .)
     DOUBLE          reduce using rule 6 (expression -> expression MINUS expression .)
     CHAR            reduce using rule 6 (expression -> expression MINUS expression .)
     BOOL            reduce using rule 6 (expression -> expression MINUS expression .)
     $end            reduce using rule 6 (expression -> expression MINUS expression .)
+    RBRACE          reduce using rule 6 (expression -> expression MINUS expression .)
     RPAREN          reduce using rule 6 (expression -> expression MINUS expression .)
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! DIVIDE          [ reduce using rule 6 (expression -> expression MINUS expression .) ]
   ! TIMES           [ reduce using rule 6 (expression -> expression MINUS expression .) ]
-  ! PLUS            [ shift and go to state 27 ]
-  ! MINUS           [ shift and go to state 28 ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 42
+state 45
 
     (7) expression -> expression DIVIDE expression .
     (5) expression -> expression . PLUS expression
@@ -1274,27 +1392,29 @@ state 42
     GTE             reduce using rule 7 (expression -> expression DIVIDE expression .)
     ID              reduce using rule 7 (expression -> expression DIVIDE expression .)
     WRITE           reduce using rule 7 (expression -> expression DIVIDE expression .)
+    IF              reduce using rule 7 (expression -> expression DIVIDE expression .)
     INT             reduce using rule 7 (expression -> expression DIVIDE expression .)
     STRING          reduce using rule 7 (expression -> expression DIVIDE expression .)
     DOUBLE          reduce using rule 7 (expression -> expression DIVIDE expression .)
     CHAR            reduce using rule 7 (expression -> expression DIVIDE expression .)
     BOOL            reduce using rule 7 (expression -> expression DIVIDE expression .)
     $end            reduce using rule 7 (expression -> expression DIVIDE expression .)
+    RBRACE          reduce using rule 7 (expression -> expression DIVIDE expression .)
     RPAREN          reduce using rule 7 (expression -> expression DIVIDE expression .)
 
-  ! PLUS            [ shift and go to state 27 ]
-  ! MINUS           [ shift and go to state 28 ]
-  ! DIVIDE          [ shift and go to state 29 ]
-  ! TIMES           [ shift and go to state 30 ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+  ! DIVIDE          [ shift and go to state 31 ]
+  ! TIMES           [ shift and go to state 32 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 43
+state 46
 
     (8) expression -> expression TIMES expression .
     (5) expression -> expression . PLUS expression
@@ -1320,27 +1440,29 @@ state 43
     GTE             reduce using rule 8 (expression -> expression TIMES expression .)
     ID              reduce using rule 8 (expression -> expression TIMES expression .)
     WRITE           reduce using rule 8 (expression -> expression TIMES expression .)
+    IF              reduce using rule 8 (expression -> expression TIMES expression .)
     INT             reduce using rule 8 (expression -> expression TIMES expression .)
     STRING          reduce using rule 8 (expression -> expression TIMES expression .)
     DOUBLE          reduce using rule 8 (expression -> expression TIMES expression .)
     CHAR            reduce using rule 8 (expression -> expression TIMES expression .)
     BOOL            reduce using rule 8 (expression -> expression TIMES expression .)
     $end            reduce using rule 8 (expression -> expression TIMES expression .)
+    RBRACE          reduce using rule 8 (expression -> expression TIMES expression .)
     RPAREN          reduce using rule 8 (expression -> expression TIMES expression .)
 
-  ! PLUS            [ shift and go to state 27 ]
-  ! MINUS           [ shift and go to state 28 ]
-  ! DIVIDE          [ shift and go to state 29 ]
-  ! TIMES           [ shift and go to state 30 ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+  ! DIVIDE          [ shift and go to state 31 ]
+  ! TIMES           [ shift and go to state 32 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 44
+state 47
 
     (11) expression -> expression EQ expression .
     (5) expression -> expression . PLUS expression
@@ -1362,31 +1484,33 @@ state 44
     GTE             reduce using rule 11 (expression -> expression EQ expression .)
     ID              reduce using rule 11 (expression -> expression EQ expression .)
     WRITE           reduce using rule 11 (expression -> expression EQ expression .)
+    IF              reduce using rule 11 (expression -> expression EQ expression .)
     INT             reduce using rule 11 (expression -> expression EQ expression .)
     STRING          reduce using rule 11 (expression -> expression EQ expression .)
     DOUBLE          reduce using rule 11 (expression -> expression EQ expression .)
     CHAR            reduce using rule 11 (expression -> expression EQ expression .)
     BOOL            reduce using rule 11 (expression -> expression EQ expression .)
     $end            reduce using rule 11 (expression -> expression EQ expression .)
+    RBRACE          reduce using rule 11 (expression -> expression EQ expression .)
     RPAREN          reduce using rule 11 (expression -> expression EQ expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! PLUS            [ reduce using rule 11 (expression -> expression EQ expression .) ]
   ! MINUS           [ reduce using rule 11 (expression -> expression EQ expression .) ]
   ! DIVIDE          [ reduce using rule 11 (expression -> expression EQ expression .) ]
   ! TIMES           [ reduce using rule 11 (expression -> expression EQ expression .) ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 45
+state 48
 
     (12) expression -> expression NEQ expression .
     (5) expression -> expression . PLUS expression
@@ -1408,31 +1532,33 @@ state 45
     GTE             reduce using rule 12 (expression -> expression NEQ expression .)
     ID              reduce using rule 12 (expression -> expression NEQ expression .)
     WRITE           reduce using rule 12 (expression -> expression NEQ expression .)
+    IF              reduce using rule 12 (expression -> expression NEQ expression .)
     INT             reduce using rule 12 (expression -> expression NEQ expression .)
     STRING          reduce using rule 12 (expression -> expression NEQ expression .)
     DOUBLE          reduce using rule 12 (expression -> expression NEQ expression .)
     CHAR            reduce using rule 12 (expression -> expression NEQ expression .)
     BOOL            reduce using rule 12 (expression -> expression NEQ expression .)
     $end            reduce using rule 12 (expression -> expression NEQ expression .)
+    RBRACE          reduce using rule 12 (expression -> expression NEQ expression .)
     RPAREN          reduce using rule 12 (expression -> expression NEQ expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! PLUS            [ reduce using rule 12 (expression -> expression NEQ expression .) ]
   ! MINUS           [ reduce using rule 12 (expression -> expression NEQ expression .) ]
   ! DIVIDE          [ reduce using rule 12 (expression -> expression NEQ expression .) ]
   ! TIMES           [ reduce using rule 12 (expression -> expression NEQ expression .) ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 46
+state 49
 
     (13) expression -> expression LT expression .
     (5) expression -> expression . PLUS expression
@@ -1454,31 +1580,33 @@ state 46
     GTE             reduce using rule 13 (expression -> expression LT expression .)
     ID              reduce using rule 13 (expression -> expression LT expression .)
     WRITE           reduce using rule 13 (expression -> expression LT expression .)
+    IF              reduce using rule 13 (expression -> expression LT expression .)
     INT             reduce using rule 13 (expression -> expression LT expression .)
     STRING          reduce using rule 13 (expression -> expression LT expression .)
     DOUBLE          reduce using rule 13 (expression -> expression LT expression .)
     CHAR            reduce using rule 13 (expression -> expression LT expression .)
     BOOL            reduce using rule 13 (expression -> expression LT expression .)
     $end            reduce using rule 13 (expression -> expression LT expression .)
+    RBRACE          reduce using rule 13 (expression -> expression LT expression .)
     RPAREN          reduce using rule 13 (expression -> expression LT expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! PLUS            [ reduce using rule 13 (expression -> expression LT expression .) ]
   ! MINUS           [ reduce using rule 13 (expression -> expression LT expression .) ]
   ! DIVIDE          [ reduce using rule 13 (expression -> expression LT expression .) ]
   ! TIMES           [ reduce using rule 13 (expression -> expression LT expression .) ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 47
+state 50
 
     (14) expression -> expression LTE expression .
     (5) expression -> expression . PLUS expression
@@ -1500,31 +1628,33 @@ state 47
     GTE             reduce using rule 14 (expression -> expression LTE expression .)
     ID              reduce using rule 14 (expression -> expression LTE expression .)
     WRITE           reduce using rule 14 (expression -> expression LTE expression .)
+    IF              reduce using rule 14 (expression -> expression LTE expression .)
     INT             reduce using rule 14 (expression -> expression LTE expression .)
     STRING          reduce using rule 14 (expression -> expression LTE expression .)
     DOUBLE          reduce using rule 14 (expression -> expression LTE expression .)
     CHAR            reduce using rule 14 (expression -> expression LTE expression .)
     BOOL            reduce using rule 14 (expression -> expression LTE expression .)
     $end            reduce using rule 14 (expression -> expression LTE expression .)
+    RBRACE          reduce using rule 14 (expression -> expression LTE expression .)
     RPAREN          reduce using rule 14 (expression -> expression LTE expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! PLUS            [ reduce using rule 14 (expression -> expression LTE expression .) ]
   ! MINUS           [ reduce using rule 14 (expression -> expression LTE expression .) ]
   ! DIVIDE          [ reduce using rule 14 (expression -> expression LTE expression .) ]
   ! TIMES           [ reduce using rule 14 (expression -> expression LTE expression .) ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 48
+state 51
 
     (15) expression -> expression GT expression .
     (5) expression -> expression . PLUS expression
@@ -1546,31 +1676,33 @@ state 48
     GTE             reduce using rule 15 (expression -> expression GT expression .)
     ID              reduce using rule 15 (expression -> expression GT expression .)
     WRITE           reduce using rule 15 (expression -> expression GT expression .)
+    IF              reduce using rule 15 (expression -> expression GT expression .)
     INT             reduce using rule 15 (expression -> expression GT expression .)
     STRING          reduce using rule 15 (expression -> expression GT expression .)
     DOUBLE          reduce using rule 15 (expression -> expression GT expression .)
     CHAR            reduce using rule 15 (expression -> expression GT expression .)
     BOOL            reduce using rule 15 (expression -> expression GT expression .)
     $end            reduce using rule 15 (expression -> expression GT expression .)
+    RBRACE          reduce using rule 15 (expression -> expression GT expression .)
     RPAREN          reduce using rule 15 (expression -> expression GT expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! PLUS            [ reduce using rule 15 (expression -> expression GT expression .) ]
   ! MINUS           [ reduce using rule 15 (expression -> expression GT expression .) ]
   ! DIVIDE          [ reduce using rule 15 (expression -> expression GT expression .) ]
   ! TIMES           [ reduce using rule 15 (expression -> expression GT expression .) ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 49
+state 52
 
     (16) expression -> expression GTE expression .
     (5) expression -> expression . PLUS expression
@@ -1592,31 +1724,33 @@ state 49
     GTE             reduce using rule 16 (expression -> expression GTE expression .)
     ID              reduce using rule 16 (expression -> expression GTE expression .)
     WRITE           reduce using rule 16 (expression -> expression GTE expression .)
+    IF              reduce using rule 16 (expression -> expression GTE expression .)
     INT             reduce using rule 16 (expression -> expression GTE expression .)
     STRING          reduce using rule 16 (expression -> expression GTE expression .)
     DOUBLE          reduce using rule 16 (expression -> expression GTE expression .)
     CHAR            reduce using rule 16 (expression -> expression GTE expression .)
     BOOL            reduce using rule 16 (expression -> expression GTE expression .)
     $end            reduce using rule 16 (expression -> expression GTE expression .)
+    RBRACE          reduce using rule 16 (expression -> expression GTE expression .)
     RPAREN          reduce using rule 16 (expression -> expression GTE expression .)
-    PLUS            shift and go to state 27
-    MINUS           shift and go to state 28
-    DIVIDE          shift and go to state 29
-    TIMES           shift and go to state 30
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    DIVIDE          shift and go to state 31
+    TIMES           shift and go to state 32
 
   ! PLUS            [ reduce using rule 16 (expression -> expression GTE expression .) ]
   ! MINUS           [ reduce using rule 16 (expression -> expression GTE expression .) ]
   ! DIVIDE          [ reduce using rule 16 (expression -> expression GTE expression .) ]
   ! TIMES           [ reduce using rule 16 (expression -> expression GTE expression .) ]
-  ! EQ              [ shift and go to state 31 ]
-  ! NEQ             [ shift and go to state 32 ]
-  ! LT              [ shift and go to state 33 ]
-  ! LTE             [ shift and go to state 34 ]
-  ! GT              [ shift and go to state 35 ]
-  ! GTE             [ shift and go to state 36 ]
+  ! EQ              [ shift and go to state 33 ]
+  ! NEQ             [ shift and go to state 34 ]
+  ! LT              [ shift and go to state 35 ]
+  ! LTE             [ shift and go to state 36 ]
+  ! GT              [ shift and go to state 37 ]
+  ! GTE             [ shift and go to state 38 ]
 
 
-state 50
+state 53
 
     (19) expression -> LPAREN expression RPAREN .
 
@@ -1632,24 +1766,258 @@ state 50
     GTE             reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     ID              reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     WRITE           reduce using rule 19 (expression -> LPAREN expression RPAREN .)
+    IF              reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     INT             reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     STRING          reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     DOUBLE          reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     CHAR            reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     BOOL            reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     $end            reduce using rule 19 (expression -> LPAREN expression RPAREN .)
+    RBRACE          reduce using rule 19 (expression -> LPAREN expression RPAREN .)
     RPAREN          reduce using rule 19 (expression -> LPAREN expression RPAREN .)
+
+
+state 54
+
+    (33) statement -> IF LPAREN expression RPAREN . LBRACE program RBRACE
+    (34) statement -> IF LPAREN expression RPAREN . LBRACE program RBRACE ELSE LBRACE program RBRACE
+
+    LBRACE          shift and go to state 55
+
+
+state 55
+
+    (33) statement -> IF LPAREN expression RPAREN LBRACE . program RBRACE
+    (34) statement -> IF LPAREN expression RPAREN LBRACE . program RBRACE ELSE LBRACE program RBRACE
+    (1) program -> . program statement
+    (2) program -> . statement
+    (3) program -> . empty
+    (4) statement -> . ID EQUAL expression
+    (26) statement -> . type ID EQUAL expression
+    (27) statement -> . type ID
+    (31) statement -> . WRITE STRING
+    (32) statement -> . WRITE expression
+    (33) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE
+    (34) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+    (30) empty -> .
+    (21) type -> . INT
+    (22) type -> . STRING
+    (23) type -> . DOUBLE
+    (24) type -> . CHAR
+    (25) type -> . BOOL
+
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for WRITE resolved as shift
+  ! shift/reduce conflict for IF resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for STRING resolved as shift
+  ! shift/reduce conflict for DOUBLE resolved as shift
+  ! shift/reduce conflict for CHAR resolved as shift
+  ! shift/reduce conflict for BOOL resolved as shift
+    ID              shift and go to state 4
+    WRITE           shift and go to state 6
+    IF              shift and go to state 8
+    RBRACE          reduce using rule 30 (empty -> .)
+    INT             shift and go to state 9
+    STRING          shift and go to state 7
+    DOUBLE          shift and go to state 10
+    CHAR            shift and go to state 11
+    BOOL            shift and go to state 12
+
+  ! ID              [ reduce using rule 30 (empty -> .) ]
+  ! WRITE           [ reduce using rule 30 (empty -> .) ]
+  ! IF              [ reduce using rule 30 (empty -> .) ]
+  ! INT             [ reduce using rule 30 (empty -> .) ]
+  ! STRING          [ reduce using rule 30 (empty -> .) ]
+  ! DOUBLE          [ reduce using rule 30 (empty -> .) ]
+  ! CHAR            [ reduce using rule 30 (empty -> .) ]
+  ! BOOL            [ reduce using rule 30 (empty -> .) ]
+
+    program                        shift and go to state 56
+    statement                      shift and go to state 2
+    empty                          shift and go to state 3
+    type                           shift and go to state 5
+
+state 56
+
+    (33) statement -> IF LPAREN expression RPAREN LBRACE program . RBRACE
+    (34) statement -> IF LPAREN expression RPAREN LBRACE program . RBRACE ELSE LBRACE program RBRACE
+    (1) program -> program . statement
+    (4) statement -> . ID EQUAL expression
+    (26) statement -> . type ID EQUAL expression
+    (27) statement -> . type ID
+    (31) statement -> . WRITE STRING
+    (32) statement -> . WRITE expression
+    (33) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE
+    (34) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+    (21) type -> . INT
+    (22) type -> . STRING
+    (23) type -> . DOUBLE
+    (24) type -> . CHAR
+    (25) type -> . BOOL
+
+    RBRACE          shift and go to state 57
+    ID              shift and go to state 4
+    WRITE           shift and go to state 6
+    IF              shift and go to state 8
+    INT             shift and go to state 9
+    STRING          shift and go to state 7
+    DOUBLE          shift and go to state 10
+    CHAR            shift and go to state 11
+    BOOL            shift and go to state 12
+
+    statement                      shift and go to state 13
+    type                           shift and go to state 5
+
+state 57
+
+    (33) statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .
+    (34) statement -> IF LPAREN expression RPAREN LBRACE program RBRACE . ELSE LBRACE program RBRACE
+
+    ID              reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    WRITE           reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    IF              reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    INT             reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    STRING          reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    DOUBLE          reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    CHAR            reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    BOOL            reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    $end            reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    RBRACE          reduce using rule 33 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE .)
+    ELSE            shift and go to state 58
+
+
+state 58
+
+    (34) statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE . LBRACE program RBRACE
+
+    LBRACE          shift and go to state 59
+
+
+state 59
+
+    (34) statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE . program RBRACE
+    (1) program -> . program statement
+    (2) program -> . statement
+    (3) program -> . empty
+    (4) statement -> . ID EQUAL expression
+    (26) statement -> . type ID EQUAL expression
+    (27) statement -> . type ID
+    (31) statement -> . WRITE STRING
+    (32) statement -> . WRITE expression
+    (33) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE
+    (34) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+    (30) empty -> .
+    (21) type -> . INT
+    (22) type -> . STRING
+    (23) type -> . DOUBLE
+    (24) type -> . CHAR
+    (25) type -> . BOOL
+
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for WRITE resolved as shift
+  ! shift/reduce conflict for IF resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for STRING resolved as shift
+  ! shift/reduce conflict for DOUBLE resolved as shift
+  ! shift/reduce conflict for CHAR resolved as shift
+  ! shift/reduce conflict for BOOL resolved as shift
+    ID              shift and go to state 4
+    WRITE           shift and go to state 6
+    IF              shift and go to state 8
+    RBRACE          reduce using rule 30 (empty -> .)
+    INT             shift and go to state 9
+    STRING          shift and go to state 7
+    DOUBLE          shift and go to state 10
+    CHAR            shift and go to state 11
+    BOOL            shift and go to state 12
+
+  ! ID              [ reduce using rule 30 (empty -> .) ]
+  ! WRITE           [ reduce using rule 30 (empty -> .) ]
+  ! IF              [ reduce using rule 30 (empty -> .) ]
+  ! INT             [ reduce using rule 30 (empty -> .) ]
+  ! STRING          [ reduce using rule 30 (empty -> .) ]
+  ! DOUBLE          [ reduce using rule 30 (empty -> .) ]
+  ! CHAR            [ reduce using rule 30 (empty -> .) ]
+  ! BOOL            [ reduce using rule 30 (empty -> .) ]
+
+    program                        shift and go to state 60
+    statement                      shift and go to state 2
+    empty                          shift and go to state 3
+    type                           shift and go to state 5
+
+state 60
+
+    (34) statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program . RBRACE
+    (1) program -> program . statement
+    (4) statement -> . ID EQUAL expression
+    (26) statement -> . type ID EQUAL expression
+    (27) statement -> . type ID
+    (31) statement -> . WRITE STRING
+    (32) statement -> . WRITE expression
+    (33) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE
+    (34) statement -> . IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
+    (21) type -> . INT
+    (22) type -> . STRING
+    (23) type -> . DOUBLE
+    (24) type -> . CHAR
+    (25) type -> . BOOL
+
+    RBRACE          shift and go to state 61
+    ID              shift and go to state 4
+    WRITE           shift and go to state 6
+    IF              shift and go to state 8
+    INT             shift and go to state 9
+    STRING          shift and go to state 7
+    DOUBLE          shift and go to state 10
+    CHAR            shift and go to state 11
+    BOOL            shift and go to state 12
+
+    statement                      shift and go to state 13
+    type                           shift and go to state 5
+
+state 61
+
+    (34) statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .
+
+    ID              reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    WRITE           reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    IF              reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    INT             reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    STRING          reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    DOUBLE          reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    CHAR            reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    BOOL            reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    $end            reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
+    RBRACE          reduce using rule 34 (statement -> IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
 WARNING: shift/reduce conflict for ID in state 0 resolved as shift
 WARNING: shift/reduce conflict for WRITE in state 0 resolved as shift
+WARNING: shift/reduce conflict for IF in state 0 resolved as shift
 WARNING: shift/reduce conflict for INT in state 0 resolved as shift
 WARNING: shift/reduce conflict for STRING in state 0 resolved as shift
 WARNING: shift/reduce conflict for DOUBLE in state 0 resolved as shift
 WARNING: shift/reduce conflict for CHAR in state 0 resolved as shift
 WARNING: shift/reduce conflict for BOOL in state 0 resolved as shift
-WARNING: reduce/reduce conflict in state 15 resolved using rule (expression -> STRING)
-WARNING: rejected rule (statement -> WRITE STRING) in state 15
+WARNING: shift/reduce conflict for ID in state 55 resolved as shift
+WARNING: shift/reduce conflict for WRITE in state 55 resolved as shift
+WARNING: shift/reduce conflict for IF in state 55 resolved as shift
+WARNING: shift/reduce conflict for INT in state 55 resolved as shift
+WARNING: shift/reduce conflict for STRING in state 55 resolved as shift
+WARNING: shift/reduce conflict for DOUBLE in state 55 resolved as shift
+WARNING: shift/reduce conflict for CHAR in state 55 resolved as shift
+WARNING: shift/reduce conflict for BOOL in state 55 resolved as shift
+WARNING: shift/reduce conflict for ID in state 59 resolved as shift
+WARNING: shift/reduce conflict for WRITE in state 59 resolved as shift
+WARNING: shift/reduce conflict for IF in state 59 resolved as shift
+WARNING: shift/reduce conflict for INT in state 59 resolved as shift
+WARNING: shift/reduce conflict for STRING in state 59 resolved as shift
+WARNING: shift/reduce conflict for DOUBLE in state 59 resolved as shift
+WARNING: shift/reduce conflict for CHAR in state 59 resolved as shift
+WARNING: shift/reduce conflict for BOOL in state 59 resolved as shift
+WARNING: reduce/reduce conflict in state 16 resolved using rule (expression -> STRING)
+WARNING: rejected rule (statement -> WRITE STRING) in state 16
 WARNING: Rule (statement -> WRITE STRING) is never reduced

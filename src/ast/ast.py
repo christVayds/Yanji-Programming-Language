@@ -78,3 +78,12 @@ class Write(ASTnode):
 
     def __repr__(self):
         return f"Write({self.expr})"
+
+class IfStatement(ASTnode):
+    def __init__(self, condition, then_branch, else_branch=None):
+        self.condition = condition
+        self.then_branch = then_branch
+        self.else_branch = else_branch
+
+    def __repr__(self):
+        return f"IfStatement({self.condition}, {self.then_branch}, {self.else_branch})"
