@@ -18,15 +18,27 @@ class Parser:
         self.lexer = Lexer()
         self.parser = yacc.yacc(module=self)
 
+    def p_program(self, p):
+        "program : statements"
+        p[0] = ast.Program(p[1])
+
     # gramar: expression : expression plus expression
     def p_program_multiple(self, p):
-        """program : program statement"""
-        p[0] = ast.Program(p[1].statement + [p[2]])
+        """statements : statements statement
+            | statement"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[2]]
 
-    def p_program_single(self, p):
-        """program : statement
-            | empty"""
-        p[0] = ast.Program(p[1])
+    #def p_program_single(self, p):
+    #    """program : statement
+    #        | empty"""
+    #    p[0] = ast.Program(p[1])
+
+    def p_statement_expr(self, p):
+        "statement : expression SEMI"
+        p[0] = p[1]
 
     # assignment
     def p_statement_assign(self, p):
@@ -127,15 +139,36 @@ class Parser:
         "statement : WRITE expression"
         p[0] = ast.Write(p[2])
 
+    def p_block(self, p):
+        "block : LBRACE program RBRACE"
+        p[0] = p[2]
+
     # if statement
     def p_statement_if(self, p):
-        """statement : IF LPAREN expression RPAREN LBRACE program RBRACE
-            | IF LPAREN expression RPAREN LBRACE program RBRACE ELSE LBRACE program RBRACE
-        """
-        if len(p) == 8:
-            p[0] = ast.IfStatement(p[3], p[6]) # no else branch
+        """statement : IF LPAREN expression RPAREN block elseif_list else_opt"""
+        p[0] = ast.IfStatement(p[3], p[5], p[6], p[7])
+
+    def p_elseif_multi(self, p):
+        """elseif_list : elseif_list elseif"""
+        p[0] = p[1] + [p[2]]
+
+    def p_elseif_empty(self, p):
+        """elseif_list : """
+        p[0] = []
+
+    def p_elseif_single(self, p):
+        """elseif : ELSEIF LPAREN expression RPAREN block"""
+        #p[0] = ('ELSEIF', p[3], p[5])
+        p[0] = ast.ElseIfStatement(p[3], p[5])
+
+    def p_else_opt(self, p):
+        """else_opt : ELSE block
+            | """
+        if(len(p)) == 3:
+            #p[0] = ('ELSE', p[2])
+            p[0] = ast.ElseStatement(p[2])
         else:
-            p[0] = ast.IfStatement(p[3], p[6], p[10]) # with else branch
+            p[0] = None
 
     # error for syntax error
     def p_error(self, p):

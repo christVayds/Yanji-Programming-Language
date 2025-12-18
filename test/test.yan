@@ -1,2 +1,14 @@
-bool study = true
-if(study == false){study = false}
+//int study = a+(2*5)
+if(study == true){
+  study = 0
+  hello = study
+  int smart = 0
+  if(study == 0){
+    write "i love you"
+  }
+} else {
+  study = 1
+  write "i love you"
+}
+//int love = 10
+//write "hello world"

@@ -70,7 +70,9 @@ class Program(ASTnode):
         self.statement = statement
 
     def __repr__(self):
-        return f"Program({self.statement})"
+        item = '\n\t'.join(str(line) for line in self.statement)
+        #return f"Program\n\t{item}"
+        return f"Progarm(\n{self.statement}\n)"
     
 class Write(ASTnode):
     def __init__(self, expr):
@@ -80,10 +82,27 @@ class Write(ASTnode):
         return f"Write({self.expr})"
 
 class IfStatement(ASTnode):
-    def __init__(self, condition, then_branch, else_branch=None):
+    def __init__(self, condition, then_branch, elseif_branch, else_branch=None):
         self.condition = condition
         self.then_branch = then_branch
+        self.elseif_branch = elseif_branch
         self.else_branch = else_branch
 
     def __repr__(self):
-        return f"IfStatement({self.condition}, {self.then_branch}, {self.else_branch})"
+        #return f"IfStatement({self.condition}, \n\t{self.then_branch}, {self.else_branch})"
+        return f"IfStatement({self.condition}, {self.then_branch}, {self.elseif_branch}, {self.else_branch})"
+
+class ElseIfStatement(ASTnode):
+    def __init__(self, condition, then_branch):
+        self.condition = condition
+        self.then_branch = then_branch
+
+    def __repr__(self):
+        return f"ElseIfStatement({self.condition}, {self.then_branch})"
+
+class ElseStatement(ASTnode):
+    def __init__(self, then_branch):
+        self.then_branch = then_branch
+
+    def __repr__(self):
+        return f"ElseStatement({self.then_branch})"

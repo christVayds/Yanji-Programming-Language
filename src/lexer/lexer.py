@@ -45,7 +45,7 @@ class Lexer:
         'LTE',      # <=
         'GT',       # >
         'GTE',      # >=
-        'SEMICOLON',
+        'SEMI',
         'COMMA',
     ]
 
@@ -77,58 +77,58 @@ class Lexer:
     }
 
     # regular expression rules for simple token
-    t_PLUS = r'\+'
-    t_MINUS = r'-'
-    t_TIMES = r'\*'
-    t_DIVIDE = r'/'
-    t_EQUAL = r'='
-    t_LPAREN = r'\('
-    t_RPAREN = r'\)'
-    t_LBRACE = r'\{'
-    t_RBRACE = r'\}'
-    t_EQ = r'=='
-    t_NEQ = r'!='
-    t_LT = r'<'
-    t_LTE = r'<='
-    t_GT = r'>'
-    t_GTE = r'>='
-    t_SEMICOLON = r';'
-    t_COMMA = r','
-    t_IF = r'if'
-    t_ELSE = r'else'
-    t_ELSEIF = r'elseif'
-    t_WHILE = r'while'
-    t_FOR = r'for'
+    t_PLUS          = r'\+'
+    t_MINUS         = r'-'
+    t_TIMES         = r'\*'
+    t_DIVIDE        = r'/'
+    t_EQUAL         = r'='
+    t_LPAREN        = r'\('
+    t_RPAREN        = r'\)'
+    t_LBRACE        = r'\{'
+    t_RBRACE        = r'\}'
+    t_EQ            = r'=='
+    t_NEQ           = r'!='
+    t_LT            = r'<'
+    t_LTE           = r'<='
+    t_GT            = r'>'
+    t_GTE           = r'>='
+    t_SEMI          = r';'
+    t_COMMA         = r','
+    t_IF            = r'if'
+    t_ELSE          = r'else'
+    t_ELSEIF        = r'elseif'
+    t_WHILE         = r'while'
+    t_FOR           = r'for'
 
     # INT
-    t_INT = r'int'
-    t_INT8 = r'int8'
-    t_INT64 = r'int64'
+    t_INT           = r'int'
+    t_INT8          = r'int8'
+    t_INT64         = r'int64'
 
     # UINT
-    t_UINT = r'uint'
-    t_UINT8 = r'uint8'
-    t_UINT64 = r'uint64'
+    t_UINT          = r'uint'
+    t_UINT8         = r'uint8'
+    t_UINT64        = r'uint64'
 
     # DOUBLE
-    t_DOUBLE = r'double'
-    t_DOUBLE8 = r'double8'
-    t_DOUBLE64 = r'double64'
+    t_DOUBLE        = r'double'
+    t_DOUBLE8       = r'double8'
+    t_DOUBLE64      = r'double64'
 
     # UDOUBLE
-    t_UDOUBLE = r'udouble'
-    t_UDOUBLE8 = r'udouble8'
-    t_UDOUBLE64 = r'udouble64'
+    t_UDOUBLE       = r'udouble'
+    t_UDOUBLE8      = r'udouble8'
+    t_UDOUBLE64     = r'udouble64'
 
 
-    t_BOOL = r'bool'
-    t_NULL = r'null'
-    t_ignore_COMMENT = r'//.*'
-    t_WRITE = r'write'                  # write or printf
+    t_BOOL              = r'bool'
+    t_NULL              = r'null'
+    t_ignore_COMMENT    = r'//.*'
+    t_WRITE             = r'write'                  # write or printf
     # t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
     # a string conataining ignore characters (spaces and tabs)
-    t_ignore = ' \t\r\n'
+    t_ignore            = ' \t\r'
 
     def __init__(self):
         self.lexer = lex.lex(module=self)
