@@ -1,0 +1,11 @@
+
+function i32 main(){
+    struct Student {
+        i32 age;
+    }
+    //i32 age = 30;
+    //Student student = {&age};
+    Student student = {20};
+    Student cstudent = &student;
+    return 0;
+}

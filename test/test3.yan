@@ -1,0 +1,18 @@
+
+function i32 main(){
+    bool student = true;
+    i32 grade = 20;
+    if(student){
+        for(i32 i=0;i<10;i=i+1){
+            if(i==5){
+                write("5 na taenang yan");
+            }
+            write("haha\n");
+        }
+        write("bitch\n");
+    } else {
+        write("kinginamo");
+    }
+    write("kingina\n");
+    return 0;
+}

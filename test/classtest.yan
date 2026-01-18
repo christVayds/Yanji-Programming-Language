@@ -1,0 +1,11 @@
+class Name{
+    function int Main(str name, int age){
+        write name
+
+        return 0
+    }
+
+    function void Learn(){
+        write "learning"
+    }
+}

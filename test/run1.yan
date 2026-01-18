@@ -1,0 +1,14 @@
+
+function int main(){
+    int a = 5
+    if(a == 10){
+        write("hello world ")
+    } elif (a == 20){
+        write("smth")
+    } else {
+        int a = 20
+        write("puking ina %d", a)
+    }
+    write("value of a: %d", a)
+    return 0
+}

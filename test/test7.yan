@@ -1,0 +1,14 @@
+function int main(int age, str name) {
+  write name
+  int num = -1
+  return "hello world"
+}
+
+//main(10, 10)
+//enum love(
+//  sex, 
+//  chocolate
+//)
+
+//love.sex
+

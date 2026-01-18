@@ -1,0 +1,12 @@
+#include stdlib
+
+#define PI 3.14159
+
+int const num = 10
+str const name = "christian vaydal"
+str name2 = "jirah mae teruel"
+int grades[5] = {1, 2, 3, 4, 5}
+str const names[2] = {
+    "christian vaydal",
+    "Jirah Mae teruel"
+}

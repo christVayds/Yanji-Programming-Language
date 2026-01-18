@@ -5,6 +5,7 @@ class Lexer:
     # list of token names
     tokens = [
         'NUMBER',
+        'FLOAT',
         'PLUS',
         'MINUS',
         'TIMES',
@@ -13,32 +14,28 @@ class Lexer:
         'RPAREN',
         'LBRACE',
         'RBRACE',
+        'LBRACK',
+        'RBRACK',
         'ID',
         'EQUAL',
         'IF',
         'ELSE',
-        'ELSEIF',
+        'ELIF',
         'WHILE',
+        'DO',
         'FOR',
-        'INT',      # INT
-        'INT64',
-        'INT8',
-        'UINT',     # UINT
-        'UINT64',
-        'UINT8',
+        'STRUCT',
+        'ENUM',
         'STRING',   # STRING
-        'DOUBLE',   # DOUBLE
-        'DOUBLE8',
-        'DOUBLE64',
-        'UDOUBLE',  # UDOUBLE
-        'UDOUBLE8',
-        'UDOUBLE64',
+        'STR',
         'BOOL',     # BOOL
         'NULL',     # null
         'CHAR',     # char
+        'CHARACTER',
         'TRUE',     # true
         'FALSE',    # false
         'WRITE',
+        'READ',     # read
         'EQ',       # ==
         'NEQ',      # !=
         'LT',       # <
@@ -47,35 +44,62 @@ class Lexer:
         'GTE',      # >=
         'SEMI',
         'COMMA',
+        'FUNC',
+        'RETURN',
+        'DOT',
+        'AND',
+        'NOT',
+        'OR',
+        'CONTINUE',
+        'BREAK',
+        'CLASS',
+        'VOID',
+        'CONST',
+        'DEFINE',
+        'INCLUDE',
+        'REF',
+        'I32',
+        'IDOUBLE'
     ]
 
     reserved = {
         'if': 'IF',
         'else': 'ELSE',
-        'elseif': 'ELSEIF',
+        'elif': 'ELIF',
         'while': 'WHILE',
+        'do': 'DO',
         'for': 'FOR',
-        'int': 'INT',               # INT
-        'int8': 'INT8',
-        'int64': 'INT64',
-        'uint': 'UINT',             # UINT
-        'uint8': 'UINT8',
-        'uint64': 'UINT64',
-        'str': 'STRING',            # STR
-        'char': 'CHAR',
-        'double': 'DOUBLE',         # DOUBLE
-        'double8': 'DOUBLE8',
-        'double64': 'DOUBLE64',
-        'udouble': 'UDOUBLE',       # UDOUBLE
-        'udouble8': 'UDOUBLE8',
-        'udouble64': 'UDOUBLE64',
+        'struct': 'STRUCT',
+        'enum': 'ENUM',
+        'i32': 'I32',
+        'idouble': 'IDOUBLE',
         'bool': 'BOOL',
+        'char': 'CHARACTER',
         'null': 'NULL',
         'true': 'TRUE',
         'false': 'FALSE',
         'write': 'WRITE',           # write or printf
+        'read': 'READ',             # read or getf
+        'function': 'FUNC',
+        'return': 'RETURN',
+        'and': 'AND',
+        'or': 'OR',
+        'not': 'NOT',
+        'str': 'STR',
+        'continue': 'CONTINUE',
+        'break': 'BREAK',
+        'class': 'CLASS',
+        'void': 'VOID',
+        'const': 'CONST',
+        '#define': 'DEFINE',
+        '#include': 'INCLUDE'
     }
 
+    def t_FLOAT(self, t):
+        r'\d+\.\d+'
+        t.value = float(t.value)
+        return t
+    
     # regular expression rules for simple token
     t_PLUS          = r'\+'
     t_MINUS         = r'-'
@@ -86,45 +110,49 @@ class Lexer:
     t_RPAREN        = r'\)'
     t_LBRACE        = r'\{'
     t_RBRACE        = r'\}'
+    t_LBRACK        = r'\['
+    t_RBRACK        = r'\]'
     t_EQ            = r'=='
     t_NEQ           = r'!='
     t_LT            = r'<'
     t_LTE           = r'<='
     t_GT            = r'>'
     t_GTE           = r'>='
+    t_AND           = r'and'
+    t_OR            = r'or'
+    t_NOT           = r'not'
     t_SEMI          = r';'
     t_COMMA         = r','
+    t_DOT           = r'\.'
+    t_REF           = r'\&'
     t_IF            = r'if'
     t_ELSE          = r'else'
-    t_ELSEIF        = r'elseif'
+    t_ELIF        = r'elif'
     t_WHILE         = r'while'
+    t_DO            = r'do'
     t_FOR           = r'for'
+    t_FUNC          = r'function'       # function
+    t_RETURN        = r'return'
+    t_CONTINUE      = r'continue'
+    t_BREAK         = r'break'
+    t_CLASS         = r'class'          # class
+    t_VOID          = r'void'
+    t_CONST         = r'const'
+    t_DEFINE        = r'\#define'
+    t_INCLUDE       = r'\#include'
+
+    t_STR           = r'str'
+    t_CHARACTER     = r'char'
 
     # INT
-    t_INT           = r'int'
-    t_INT8          = r'int8'
-    t_INT64         = r'int64'
-
-    # UINT
-    t_UINT          = r'uint'
-    t_UINT8         = r'uint8'
-    t_UINT64        = r'uint64'
-
-    # DOUBLE
-    t_DOUBLE        = r'double'
-    t_DOUBLE8       = r'double8'
-    t_DOUBLE64      = r'double64'
-
-    # UDOUBLE
-    t_UDOUBLE       = r'udouble'
-    t_UDOUBLE8      = r'udouble8'
-    t_UDOUBLE64     = r'udouble64'
-
+    t_I32           = r'i32'
+    t_IDOUBLE       = r'idouble'
 
     t_BOOL              = r'bool'
     t_NULL              = r'null'
     t_ignore_COMMENT    = r'//.*'
     t_WRITE             = r'write'                  # write or printf
+    t_READ              = r'read'
     # t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
     # a string conataining ignore characters (spaces and tabs)

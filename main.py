@@ -2,7 +2,6 @@ import sys
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
 from src.compiler.compiler import Compiler
-import pprint
 
 def lex(line):
     lexer = Lexer()
@@ -16,31 +15,32 @@ def pars(line):
 
 def main(filename: str):
     compiler = Compiler()
-    compiler.createMain()
+    #compiler.createMain()
 
     with open(filename, 'r') as file:
         text = file.read()
         #lex(text)
         ast = pars(text)
         print(ast)
-        #compiler.code_gen(ast)
+        compiler.code_gen(ast)
+        
+        # print module
+        print(f'{compiler.module}\n\n')
 
-    # exit main function
-    compiler.finish()
-
-    # print module
-    # print(f'{compiler.module}\n\n')
-
-    # JIT compile execution
-    if compiler.success:
-        #compiler.JITExec()
-        print("executed success.")
+        # JIT compile execution
+        if compiler.success:
+            compiler.generate_llvmIR()
+            #compiler.JITExec()
+            pass
 
 if __name__=='__main__':
     count = len(sys.argv)
     if count > 1:
         filename = sys.argv[1]
         filename = f'test/{filename}'
-        main(filename=filename)
+        try:
+            main(filename=filename)
+        except FileNotFoundError:
+            print(f"File Not Found Error: Bith what the heck is {filename}")
     else:
         print("no file")

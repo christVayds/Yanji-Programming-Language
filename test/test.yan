@@ -1,14 +1,16 @@
-//int study = a+(2*5)
-if(study == true){
-  study = 0
-  hello = study
-  int smart = 0
-  if(study == 0){
-    write "i love you"
-  }
-} else {
-  study = 1
-  write "i love you"
+
+i32 num[3] = {50, 2, 3}
+char fullname[] = "christian vaydal"
+
+function void sayHello(){
+    write("hello world")
 }
-//int love = 10
-//write "hello world"
+
+function i32 main(){
+    char name[] = "wow"
+    i32 num[] = {12, 23, 34}
+    idouble doub[] = {12.0, 12.5, 12.6}
+    char xcs[] = {'x', 'c', 's'}
+    write("My name is %d %s %c %s", num[2], name, xcs[2], fullname)    
+    return 0
+}

@@ -1,0 +1,12 @@
+
+struct Student {
+    str name
+    int age
+}
+
+Student primeStudent = {"christian vaydal", 10}
+function int main(){
+    Student student1 = {"christian", 10}
+    write("Regular Student name: %s\nPrime Student Name: %s", student1.name, primeStudent.name)
+    return 0
+}
