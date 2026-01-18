@@ -1,0 +1,6 @@
+int num = 10
+int *pnum = &num
+
+#define PI 3.14159
+
+num.num()

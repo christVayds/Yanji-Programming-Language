@@ -1,0 +1,10 @@
+
+i32 num = 30;
+i32 *pnum = &num;
+//char *bwahaha = "wahahahhaa";
+function i32 main(){
+    char *greet = "hello world";
+    //char c = 'c';
+    write("%s", greet);
+    return 0;
+}

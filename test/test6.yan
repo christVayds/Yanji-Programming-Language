@@ -1,0 +1,3 @@
+int list[5] = {}
+list = {1, 2, name = "christian"}
+//tuple = (1, 2, name = "christian")

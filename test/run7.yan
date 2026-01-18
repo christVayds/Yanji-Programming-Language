@@ -1,0 +1,12 @@
+
+int gege[2] = {1, 2}
+
+function int main(){
+    int size = 3
+    int arr[size] = {1,2,3}
+    arr[0] = 20
+    int num = arr[0]
+
+    write("hello world %d", num)
+    return 0
+}

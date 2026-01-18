@@ -1,0 +1,29 @@
+
+enum Love(
+    tangina 1, gagu
+)
+
+function void Halaman(){
+    write("hello world")
+}
+
+function int main(){
+    enum Days(
+        monday, 
+        tuesday 30, 
+        wednesday
+    )
+    Days day = tuesday
+    Love love = gagu
+
+    struct Student{
+        str name
+        int age
+    }
+
+    Student student = {
+        "christian", 25
+    }
+    write("%d %s %d", day, student.name, love)
+    return 0
+}

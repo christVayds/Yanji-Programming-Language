@@ -1,0 +1,18 @@
+
+function int Hello(str name){
+    write("Hello %s", name)
+    return 0
+}
+
+function int main(){
+    int size = 3
+    str Names[3] = {"christian", "jon", "sam"}
+
+    for(int i=0;i<size;i=i+1){
+        write("Name[%d] = %s\n", i, Names[i])
+    }
+
+    Hello("hu")
+
+    return 0
+}

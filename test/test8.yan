@@ -1,0 +1,6 @@
+//int8 good = not good and good == 5 + 5
+int8 num1= 16
+int num[5] = {1, 2, 3, 4, 5}
+
+// access array
+num[5]

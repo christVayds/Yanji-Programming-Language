@@ -1,0 +1,10 @@
+struct name {
+  int age
+  bool study
+}
+
+enum day (
+  monday,
+  tuesday,
+  wednessday
+)

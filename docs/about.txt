@@ -2,74 +2,200 @@
 Yanji Programming Language is a typed, low-level and high-level programming Language.
 Designed to be fast, modern and beginer-friendly.
 
-Bugs and errors:
-    1. Printing
+self.symbol_table = {
+    'name': {
+        'ptr': pointer-of-the-variable,         # ptr of the variable
+        'type': int,                            # type of the variable
+        'text_bytes': textbytes(),              # textbytes only for str
+        'mutable': true,                        # if mutable
+    }
+}
 
-TO-DOs
+Bugs and errors:
+    1. Printing                 # check later
+    2. double values            # fixed
+
+TO-DO(lexer and parser)
     1. Exceptions and error handling
-    2. if statements
-    3. for loops 
-    4. while loops 
-    5. functions
-    6. structs
-    7. enum
-    8. logical
-    9. ==, !=, >, <, >=, <=
+    2. if statements                          # done
+    3. for loops                              # done ? 
+    4. while loops                            # done ? 
+    5. functions                              # done
+    6. structs                                # done ?
+    7. enum                                   # done ?
+    8. Logical                                # done
+    9. ==, !=, >, <, >=, <=                   # done
     10. switch
-    11. do-while loops
-    12. re-assigning variables
+    11. do-while loops                        # done
+    12. re-assigning variables                # complete
+    13. complete the data types of int and double # done
+    14. foreach loop
+    15. List, arrays and tupes                # already good, to be remove tuples
+    16. accessing enum and struct             # done
+    17. accessing arrays                      # done
+    18. function call                         # done
+    19. continue, break                       # done
+    20. return                                # done
+    21. Object Oriented                       # done
+    22. Pointers and reference                # done
+    23. const keyword                         # done
+    24. define, include                       # done            # done
+    25. read (input function)                 # done
+    26. especial arrays
+
+TO-DO(semantic analysis):
+  1. if statements
+
+COMPILER BASICS:
+  [+] assignments
+  [+] write
+  [+] binary operations
+  [+] functions
+  [+] logical operation
+  [+] logical operation for strings
+  [+] comparison operation
+  [+] if-statement
+  [+] for loop
+  [+] while loop
+  [-] break
+  [-] continue
+  [+] struct
+  [+] enum
+  [+] arrays
+  [-] passing arrays, enum, struct to a function
+  [+] Pointers
+  [+] reference
+  [-] pointer to pointers
+  [-] optimize memory
+  [-] use temporary values for scopes
+  [-] class objects
+  [-] What the hell is PHI?
+
+  BUGS:
+  [-] pointers to pointers
+  [-] string in global scope
+  [-] printing reference of a global variable error
+  [-] i32 *pnum = &struct.value;
+  [-] pointers in structs
+  [-] pointers struct, enum, etc.
+  [-] assign struct to another struct (Structname ystruct = xstruct or Structname ystruct = &xstruct)
+
+  BUGS FIXED:
+  [+] basic pointers
+  [+] function call
+  [+] arrays
+  [+] add SEMI
+  [+] pointers in global scope
+  [+] string in local scope
+
+  Data types
+  [+] i32
+  [+] idouble
+  [+] char
+  [+] str
+  [+] bool
+  [+] void
+  [+] struct
+  [+] enum
+  [+] arrays
+  [-] #define
+
+  Other Data types
+  [-] i8 
+  [-] i64 
+  [-] i128
+  [-] u8 
+  [-] u32
+  [-] u64 
+  [-] u128
+  [-] ifloat
+  [-] udouble
+  [-] ufloat
+
+  Advanced:
+    [-] do-while loop
+    [-] foreach loop
+    [-] a pointer that points to a fucking function
+
+  Modifiers:
+    [-] const
+    [-] static
+
+TO-DO(compiler):
+  [done] assignments
+    [+] int
+    [+] string
+    [+] bool
+    [+] chars
+    [+] identifier
+    [+] functions
+
+  [+] global and local Scopes
+  [+] operation
+  [+] write
+  [+] write features
+  [+] double / floating numbers
+  [+] binary operation for float and double
+  [-] binary operation for signed values
+  [+] fix newline in string
+  [+] function arguments
+  [+] function return
+  [+] int, string, char, double, bool returned function
+  [-] complete all datatypes
+  [-] cant do operation outside local scopes
+  [+] problem in local and global scope when assigning a method
+  [+] logical operation
+  [+] fix not operation
+  [+] if statement
+  [+] binary operation with function call
 
 Scopes
     1. local 
     2. global
     3. block scopes 
-    4. function scopes 
+    4. function scopes
 
-datatypes:
-    int
-    int8
-    int64
+Logical:
+  and, or, not
 
-    uint
-    uint8
-    uint64
+i32 age = 20                # declared
+age = 30                    # error - immutable variable cannot be change
+str msg = "hello world"     # string similar(char ?msg = "hello world")
+char msg[] = "hello world"  # another string 
+i8 sum;                     # undeclared value
+mut i32 x = 100             # mutable variable
+x = 30                      # only mutable variable can be change
+const i32 num = 10          # constant variable
 
-    double
-    udouble
-    double64
-    udouble8
-
-    str
-    char
-    bool
-
-    struct
-    enum
-    arrays 
-    lists
-
-int age = 20            # declared
-num = 20                # auto declaration of type
-msg = "hello world"     # string
-int8 sum;               # undeclared value
+IO:
+    write name              # only print string
+    read name               # get input from user
 
 # ARRAYS
-int arr[10] = {}        # array of type int
-int tups[10] = ()       # tuple of type int
+i32 arr[10] = {}        # array of type int
+
+i32 arrays[5] = {1, 2, 3, 4, 5}
+i32 const arrays[2] = {1, 2}      # const array
+
+array = {1, 2, 3, 4, 5}         # already did this
+
+Assign(name, {1, 2, 3, 4, 5}, List(string, 5))
+
 # especial array
-(str name, int age, double grade) student[10] = {
+(str name, i32 age, idouble grade) student[10] = {
     {"christian", 20, 80.5}
 }
 
 # STRUCT
 struct Student(
     str name
-    int age
+    i32 age
     double grade
 )
 
 # create new struct
 struct student1 = new Student("christian", 20, 80.5)
+student1.name
 
 # access struct
 student1.name
@@ -84,19 +210,31 @@ enum State(
 # IF STATEMENT
 if(age > 20){
     age = age + 1
-} ifelse (age < 19){
+} elseif (age < 19){
     age--
 } else {
     age = 20
 }
 
+# switch case statement 
+switch(name){
+  case 1:
+    print("hi")
+    break
+  case 2:
+    print("hello")
+    break
+  default:
+    print("nah")
+}
+
 # FOR LOOPS
-for(int i=0;i<age;i++){
+for(i32 i=0;i<age;i++){
     age++
 }
 
 # FOREACH LOOPS
-foreach(int num in numbers){
+foreach(i32 num in numbers){
 
 }
 
@@ -105,29 +243,35 @@ while(true){
     # do something
 }
 
+do {
+
+} while (condition)
+
 # FUNCTION
-func int main(){
-    int num = 20
+function i32 main(){
+    i32 num = 20
     return 0;
 }
 
-func void sayHello(str msg){
+function void sayHello(str msg){
 
 }
+
+# Pointers use ?
+i32 num = 100
+i32 ?pnum = &num
+?pnum = 10
+?pnum = &num2   // illegal
+pnum = &num2
 
 # OOP
 
--> create a struct
-struct Student (
-    str name
-    int age
-    double grade
+class Name {
 
-    # enum functions
-    func void Copy()
-)
+  funtion int Main(){
 
-# function statement
-func void Student::Copy(){
-
+    return 0
+  }
 }
+
+every expression and statement ends with SEMI(;)

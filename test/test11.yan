@@ -1,0 +1,5 @@
+function int main(){
+    write "hello world!"
+
+    return 0
+}
