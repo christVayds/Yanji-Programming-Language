@@ -28,14 +28,14 @@ enum Team{
 	Blue,
 	Yellow,
 	Red
-}
+};
 
 struct Student{
 	char *name;
 	i32 age;
 	idouble grade;
 	Team team;
-}
+};
 // this is the main function
 function i32 main() {
   Student student{
